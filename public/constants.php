@@ -32,6 +32,13 @@ define('URL_ADD_POST_SLASH', FALSE);
 define('ADMIN_BASE', 'home');
 
 // set user roles
-const ROLE_USER = 0;
-const ROLE_ADMIN = 1;
-const ROLE_ARRAY = [ROLE_USER => "USER", ROLE_ADMIN => "ADMIN"];
+const ROLE_USER         = 0;
+const ROLE_ADMIN        = 1;
+const ROLE_ARRAY        = [ROLE_USER => "USER", ROLE_ADMIN => "ADMIN"];
+
+//API Request Methods
+const METHOD_GET        = "GET";
+const METHOD_POST       = "POST";
+const METHOD_PUT        = "PUT";
+const METHOD_DELETE     = "DELETE";
+const METHOD_OPTIONS    = "OPTIONS";

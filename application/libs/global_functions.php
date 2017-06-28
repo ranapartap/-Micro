@@ -118,3 +118,47 @@ function error_exit($error, $description = null) {
     exit;
 
 }
+
+
+/**
+ * Get base url as per parameters provided
+ *
+ * echo base_url();
+ *          - http://stackoverflow.com/questions/2820723/
+ * echo base_url(TRUE);
+ *          - http://stackoverflow.com/
+ * echo base_url(TRUE, TRUE); || echo base_url(NULL, TRUE);
+ *          - http://stackoverflow.com/questions/
+ *
+ */
+function base_url($root_only = false, $atCore = false) {
+    if (isset($_SERVER['HTTP_HOST'])) {
+        $http = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+        $hostname = $_SERVER['HTTP_HOST'];
+        $dir = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+
+        $core = preg_split('@/@', str_replace($_SERVER['DOCUMENT_ROOT'], '', realpath(dirname(__FILE__))), NULL, PREG_SPLIT_NO_EMPTY);
+        $core = $core[0];
+
+        $tmplt = $root_only ? ($atCore ? "%s://%s/%s/" : "%s://%s/") : ($atCore ? "%s://%s/%s/" : "%s://%s%s");
+        $end = $root_only ? ($atCore ? $core : $hostname) : ($atCore ? $core : $dir);
+        $base_url = sprintf($tmplt, $http, $hostname, $end);
+        // $base_url = $root_only && strpos($_SERVER['SCRIPT_NAME'], '/dev') >= 0 ? $base_url.'dev/' : $base_url;
+    } else
+        $base_url = 'http://localhost/';
+
+    return $base_url;
+}
+
+
+/**
+ * Get site url
+ */
+function site_url($location = false) {
+    $url = base_url(true);
+
+    if (!$location)
+        return $url;
+
+    return $url . $location . '/';
+}

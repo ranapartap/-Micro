@@ -15,6 +15,8 @@ Micro is easy and micro.
 
 ## Structure
 - Bootstrap 3
+- Bootstrap SweetAlert
+- DataTables
 - MVC Structure
 - Klein Router Library
 - NotORM Database Library

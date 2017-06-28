@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Admin Panel menus
+ */
 $admin_menus =  [
                     ["name" => "Dashboard",     "url" => '',                'icon' => 'pe-7s-graph'],
                     ["name" => "Users",         "url" => 'user',            'icon' => 'pe-7s-user'],

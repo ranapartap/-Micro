@@ -34,6 +34,8 @@ require PATH_LIB . 'global_functions.php';
 // Load Application menus
 require APP . 'config/menus.php';
 
+define('URL', site_url());
+
 // load application class
 use Micro\Core\Application;
 

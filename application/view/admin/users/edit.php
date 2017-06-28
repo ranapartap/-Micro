@@ -56,7 +56,8 @@
                         </div>
                     </div>
                     <input type="hidden" name="_method" value="<?= $this->method ?>" />
-                    <button type="submit" class="btn btn-info btn-fill pull-right">Update Profile</button>
+                    <a href="<?= admin_url('user') ?>" class="btn btn-danger btn-fill">Cancel</a>
+                    <button type="submit" class="btn btn-info btn-fill">Update Profile</button>
                     <div class="clearfix"></div>
                 </form>
             </div>

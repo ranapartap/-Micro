@@ -2,43 +2,54 @@
     <div class="col-md-12">
         <div class="card">
             <div class="header">
-                <h4 class="title">Striped Table with Hover</h4>
-                <p class="category">Here is a subtitle for this table</p>
+                <h4 class="title">Manage Users</h4>
+                <!--<p class="category"></p>-->
             </div>
 
-            <div class="content table-responsive">
-                <table id="dt-users" class="table table-hover table-striped">
+            <div class="content table-responsive ">
+                <table id="dt-users" class="table table-hover table-striped display dataTable dtr-inline">
                     <thead>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Fullname</th>
-                    <th>Mobile</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Fullname</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th class="no-filter" >Actions</th>
                     </thead>
+
+                    <tfoot>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Fullname</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th class="no-filter" ></th>
+                    </tfoot>
+
                     <tbody>
 
                         <?php foreach ($this->users as $key => $user) : ?>
-                        <tr>
-                            <td><?=$user['id']?></td>
-                            <td><?=$user['username']?></td>
-                            <td><?=$user['fullname']?></td>
-                            <td><?=$user['mobile']?></td>
-                            <td><?=$user['email']?></td>
-                            <td><?= \Micro\Controller\AdminUserController::USER_STATUS_ARRAY[$user['status']]?></td>
-                            <td>
-                                <a href="<?= admin_url('user/').$user['id']; ?>" class="btn btn-sm btn-info btn-fill ">Edit</a>
+                            <tr  id="dt-row-<?= $user['id'] ?>" class="dt-row <?= $user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ? 'text-danger' : '' ?> ">
+                                <td><?= $user['id'] ?></td>
+                                <td><?= $user['username'] ?></td>
+                                <td><?= $user['fullname'] ?></td>
+                                <td><?= $user['mobile'] ?></td>
+                                <td><?= $user['email'] ?></td>
+                                <td><?= \Micro\Controller\AdminUserController::USER_STATUS_ARRAY[$user['status']] ?></td>
+                                <td>
+                                    <a href="<?= admin_url('user/') . $user['id']; ?>" class="btn btn-xs btn-info btn-fill ">Edit</a>
 
-                                <?php if ($user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
-                                    <a href="<?= admin_url('user/block/').$user['id'].'/'.\Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" class="btn btn-sm btn-success btn-fill ">Block</a>
-                                <?php } else { ?>
-                                    <a href="<?= admin_url('user/block/').$user['id'].'/'.\Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" class="btn btn-sm btn-danger btn-fill ">Activate</a>
-                                <?php } ?>
+                                    <?php if ($user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
+                                        <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" class="btn btn-xs btn-danger btn-fill ">Block</a>
+                                    <?php } else { ?>
+                                        <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" class="btn btn-xs btn-success btn-fill ">Activate</a>
+                                    <?php } ?>
 
-                                <button class="btn btn-sm btn-danger btn-fill ">Delete</button>
-                            </td>
-                        </tr>
+                                    <button class="btn btn-xs btn-warning btn-fill delete-user" fullname="<?= $user['fullname'] ?>" id="<?= $user['id'] ?>">Delete</button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
 
                     </tbody>
@@ -51,7 +62,71 @@
     </div>
 </div>
 <script>
-$(document).ready(function() {
-    $('#dt-users').DataTable( );
-} );
+    $(document).ready(function () {
+        var datatable = $('#dt-users').DataTable({
+            responsive: true,
+            pageLength: 25,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    if ($(column.footer()).attr('class'))
+                        return;
+                    console.log($(column.footer()).attr('class'));
+
+                    var select = $('<select class="form-control input-xs no-padding-tb"><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                        );
+                                column
+                                        .search(val ? '^' + val + '$' : '', true, false)
+                                        .draw();
+                            });
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        $('.delete-user').click(function () {
+            var user_id = $(this).attr('id');
+            var datatable = $('#dt-users').DataTable( );
+            var fullname = $(this).attr('fullname');
+
+            swal({
+                title: "Delete " + fullname + " ?",
+                text: "Sure to delete this user?",
+                type: "warning",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No',
+                confirmButtonClass: 'btn btn-danger',
+                cancelButtonClass: 'btn btn-success btn-fill',
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: currenturl + "/" + user_id,
+                    data: {_method: "<?= METHOD_DELETE ?>"},
+                    dataType: "json",
+                    success: function (data) {}
+                }).done(function (data) {
+                    console.log(data);
+                    if (data.success) {
+                        swal("Deleted!", "User deleted successfully", "success");
+                        datatable.row('#dt-row-' + user_id).remove().draw(false);
+                    } else {
+                        swal("Error!", data.error, "error");
+                    }
+                    $('#orders-history').load(document.URL + ' #orders-history');
+                }).error(function (data) {
+                    swal("Oops", "We couldn't connect to the server!", "error");
+                });
+            });
+        });
+
+    });
 </script>
