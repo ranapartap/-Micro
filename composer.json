@@ -1,0 +1,24 @@
+{
+    "name": "rana/micro",
+    "description": "Micro - Quickstart core PHP application base with MVC/Router/Frontend/LoginAuth/AdminPanel",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rana Partap",
+            "email": "rana.partap.india@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+            "klein/klein": "*",
+            "vrana/notorm":"dev-master"
+        },
+    "autoload":
+    {
+        "psr-4":
+        {
+            "Micro\\" : "application/"
+        }
+    }
+}
