@@ -1,5 +1,5 @@
 {
-    "name": "rana/micro",
+    "name": "ranapartap/micro",
     "description": "Micro - Quickstart core PHP application base with MVC/Router/Frontend/LoginAuth/AdminPanel",
     "type": "project",
     "license": "MIT",

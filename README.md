@@ -1,6 +1,6 @@
 # Micro
 
-Micro - a quickstart Core PHP skeleton application with:
+Micro - Quickstart core PHP skeleton application
 
 Micro is an simple, robust, easy to understand skeleton PHP application to quickstart a new project for developers. It is not a framework and has not all the features which exists in any framework, but it is designed to provide the max of a framework without any unnecessary overloads. I have tried to pick the best and compact available libraries which can help reducing the code and provide a nice structure to the application
 
