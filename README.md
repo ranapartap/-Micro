@@ -1,6 +1,7 @@
+
 # Micro
 
-Micro - Quickstart core PHP skeleton application
+Micro - a quickstart Core PHP skeleton application with:
 
 Micro is an simple, robust, easy to understand skeleton PHP application to quickstart a new project for developers. It is not a framework and has not all the features which exists in any framework, but it is designed to provide the max of a framework without any unnecessary overloads. I have tried to pick the best and compact available libraries which can help reducing the code and provide a nice structure to the application
 
@@ -41,11 +42,15 @@ Micro is easy and micro.
 
 ## Installation
 
-1. Edit the database credentials in `application/config/config.php`
-2. Execute the .sql statements in the `_install/`-folder (with PHPMyAdmin for example).
-3. Make sure you have mod_rewrite activated on your server / in your environment. Some guidelines:
-4. Install composer and run `composer install` in the project's folder to create the PSR-4 autoloading stuff from Composer automatically.
-   Basically composer autoloading is autolad the application just like "include filename.php" all over our projects to include and use anything. PSR is the modern, clean and automatic version of that.
+1. Install via composer:
+`composer create-project ranapartap/micro`
+2. Edit the database credentials in `application/config/config.php`
+3. Create the required SQL database/tables with .sql statements in the `_install/`-folder
+4. Make sure you have mod_rewrite activated on your server/in your server environment.
+5. Install composer and run `composer install` in the project's folder to create the PSR-4 autoloading stuff from Composer automatically.
+	- Basically composer install the required support libraries like Klien Router/NoORM and othrs etc.
+	- Also autolad the application PSR-4  system which works just like "include filename.php" all over our projects to include and use anything. PSR is the modern, clean and automatic version of old school "include" command.
+6. Open `micro\public` folder and run `serve.bat` batch file. It will start the server at `http://localhost:8081`. You can type this address in browser and application will starts. (Make sure you have set path `php` path in you local environment correctly to run php, You can check the same by typing "php" on command prompt. If it does not give any error like (Windows 10) `php is not recognized as an internal or external command, operable program or batch file.)`. Then everything is fine and server will be started.
 
 Micro runs without any complex configuration.
 
