@@ -2,11 +2,12 @@
     <div class="col-md-12">
         <div class="card">
             <div class="header">
-                <h4 class="title">Manage Users</h4>
+                <h4 class="title">Manage Users <a href="<?=admin_url('user')?>" class="btn btn-xs btn-success btn-fill ">Add New User</a></h4>
+
                 <!--<p class="category"></p>-->
             </div>
 
-            <div class="content table-responsive ">
+            <div class="dataTableWrapper content table-responsive">
                 <table id="dt-users" class="table table-hover table-striped display dataTable dtr-inline">
                     <thead>
                         <th>ID</th>
@@ -15,7 +16,7 @@
                         <th>Mobile</th>
                         <th>Email</th>
                         <th>Status</th>
-                        <th class="no-filter" >Actions</th>
+                        <th class="no-filter no-sort" >Actions</th>
                     </thead>
 
                     <tfoot>
@@ -25,7 +26,7 @@
                         <th>Mobile</th>
                         <th>Email</th>
                         <th>Status</th>
-                        <th class="no-filter" ></th>
+                        <th class="no-filter no-sort" ></th>
                     </tfoot>
 
                     <tbody>
@@ -66,6 +67,7 @@
         var datatable = $('#dt-users').DataTable({
             responsive: true,
             pageLength: 25,
+            columnDefs: [{ targets: 'no-sort', orderable: false }],
             initComplete: function () {
                 this.api().columns().every(function () {
                     var column = this;

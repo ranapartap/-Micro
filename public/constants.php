@@ -1,7 +1,8 @@
 <?php
 
-define('SITE_TITLE', 'My Great Sites');
-define('SIDEBAR_TITLE', 'Admin');
+define('SITE_TITLE', 'Micro - a quickstart Core PHP skeleton application.');
+define('SIDEBAR_TITLE', 'Micro');
+define('SIDEBAR_TITLE_MINI', 'MI');
 
 // set a constant that holds the project's folder path, like "/var/www/".
 // DIRECTORY_SEPARATOR adds a slash to the end of the path

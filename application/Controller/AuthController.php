@@ -13,25 +13,30 @@ namespace Micro\Controller;
 
 use Micro\Controller\BaseController;
 use Micro\Core\SessionManager;
+use Micro\Core\Application;
 
 class AuthController extends BaseController {
 
-    public function login($req, $res, $service, $app) {
-        $service->render(getPath('view') . 'auth/login.php');
+    public function login() {
+
+        Application::$service->render(getPath('view') . 'auth/login.php');
     }
 
-    public function do_login($req, $res, $service, $app) {
+    public function do_login() {
+
+        if(Application::$service->username)
+
         $session = new SessionManager;
         $session->setSessionKey('user', ['role' => 1, 'user_name'=> 'Administrator']);
 
-        return $res->redirect(admin_url('', false));
+        return Application::$response->redirect(admin_url('', false));
     }
 
-    public function logout($req, $res, $service, $app) {
+    public function logout() {
         $session = new SessionManager;
-        $session->Clear();
+        $session->clearSession();
 
-        return $res->redirect(getBaseUrl());
+        return Application::$response->redirect(getBaseUrl());
     }
 
 }

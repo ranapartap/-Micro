@@ -86,12 +86,13 @@ function dd($var, $can_die = false) {
         die();
 }
 
-function arrayToObject($d) {
-    if (is_array($d)) {
-        return (object) array_map(__FUNCTION__, $d);
-    } else {
-        return $d;
-    }
+function arrayToObject($array) {
+    return json_decode(json_encode($array));
+//    if (is_array($d)) {
+//        return (object) array_map(__FUNCTION__, $d);
+//    } else {
+//        return $d;
+//    }
 }
 
 function error_exit($error, $description = null) {

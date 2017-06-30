@@ -59,6 +59,7 @@
     </body>
 
     <!--   Core JS Files   -->
+    <script src="<?= get_url('js') ?>jquery-ui.min.js" type="text/javascript"></script>
     <script src="<?= get_url('js') ?>bootstrap.min.js" type="text/javascript"></script>
     <script src="<?= get_url('js') ?>bootstrap-checkbox-radio-switch.js"></script>
     <script src="<?= get_url('js') ?>chartist.min.js"></script>
@@ -71,6 +72,11 @@
     <!--<script src="<?= get_url('js') ?>demo.js"></script>-->
 
     <script type="text/javascript">
+
+//         $('.sidebar .sidebar-wrapper').perfectScrollbar();
+//         $('.main-panel').perfectScrollbar();
+//         $('body').addClass('sidebar-mini');
+
 //            $(document).ready(function () {
 //
 //                demo.initChartist();

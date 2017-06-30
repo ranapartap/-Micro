@@ -14,6 +14,7 @@ namespace Micro\Controller;
 use Klein\Klein;
 use Micro\Core\SessionManager;
 use Micro\Core\Model;
+use Micro\Core\Application;
 
 class RouteController {
 
@@ -29,11 +30,17 @@ class RouteController {
         $this->router = new \Klein\Klein();
 
         //Create the Database Connection will be used in all Controllers with ($app->db->connection->[tablename()])
-        $this->router->respond(function ($request, $response, $service, $app) {
+        $this->router->respond(function ($req, $res, $ser, $app) {
             $app->register('db', function() {
                 $model = new Model();
                 return $model;
             });
+
+            Application::$request = $req;
+            Application::$response = $res;
+            Application::$service = $ser;
+            Application::$app = $app;
+
         });
 
         // Frontend requests handling
@@ -93,43 +100,50 @@ class RouteController {
      */
     public function admin($Controller) {
 
+        $admin_menus = arrayToObject(unserialize(ADMIN_MENUS));
+//        dd($admin_menus);
+//        dd($admin_menus->Dashboard->actions[0]->route);
+
         // Setup layout for every Admin page pages
         $this->router->respond(function ($request, $response, $service) {
             $service->layout(getPath('views') . 'admin/_layout.php');
         });
+//                dd($admin_menus);
 
-        // Admin Dashboard
-        $this->router->get('/?', function($request, $response, $service, $app) use ($Controller) {
-            return $Controller->index($request, $response, $service, $app);
-        });
+        //Loop each menu
+        foreach ($admin_menus as $mKey => $menu)
+        {
+            if(!isset($menu->actions)) continue;
 
-        /** Admin Users Page **/
-        // Declare Admin User Controller to handle Users page requests
-        $userController = new \Micro\Controller\AdminUserController();
+            //Loop each action
+            foreach ($menu->actions as $akey => $action)
+            {
+                //Create the route
+                $this->createRoute($action->method, $action->route, [new $menu->controller, $action->action]);
 
-        // Users index "www.example.com/admin/user"
-        $this->router->get('/user', function($request, $response, $service, $app) use ($userController) {
-            return $userController->index($request, $response, $service, $app);
-        });
+            }
 
-        // Edit user "www.example.com/admin/user/1" (user id)
-        $this->router->get('/user/[i:id]', function($request, $response, $service, $app) use ($userController) {
-            return $userController->edit($request, $response, $service, $app);
-        });
+        }
 
-        // Save user data "www.example.com/admin/user/1" (user id)
-        $this->router->put('/user/[i:id]', function($request, $response, $service, $app) use ($userController) {
-            return $userController->update($request, $response, $service, $app);
-        });
+    }
 
-        // Delete user "www.example.com/admin/user/1" (user id)
-        $this->router->delete('DELETE','/user/[i:id]', function($request, $response, $service, $app) use ($userController) {
-            return $userController->ajaxDelete($request, $response, $service, $app);
-        });
+    /**
+     * Create a new Route
+     *
+     * @param string $request_method Method Type eg: GET,POST,PUT,DELETE,OPTIONS etc.
+     * @param string $route Url route  eg: '/?', '/admin', '/user/edit/[id]' etc.
+     * @param mix $action Function name for any global function
+     *                          eg: createUser()
+     *                      Array for Class function [$classname, $function]
+     *                          eg: ['AdminController','index']
+     */
+    public function createRoute($request_method, $route, $action) {
 
-        // Block user "www.example.com/admin/user/1/mode" (user id)/(mode parameter Block/Activate user)
-        $this->router->get('/user/block/[i:id]/[i:mode]', function($request, $response, $service, $app) use ($userController) {
-            return $userController->block($request, $response, $service, $app);
+        $this->router->respond($request_method, $route, function() use ($action)  {
+            if (is_callable($action) )
+                return call_user_func($action);
+            else
+                error_exit("Invalid method");
         });
 
     }

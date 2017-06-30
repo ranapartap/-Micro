@@ -1,11 +1,5 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed">
     <div class="container-fluid">
-        <div class="navbar-minimize">
-            <button id="minimizeSidebar" class="btn btn-info btn-fill btn-round btn-icon">
-                <i class="fa fa-ellipsis-v visible-on-sidebar-regular"></i>
-                <i class="fa fa-navicon visible-on-sidebar-mini"></i>
-            </button>
-        </div>
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
                 <span class="sr-only">Toggle navigation</span>
@@ -17,14 +11,11 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
-<!--                <li>
-                    <a href="">
-                        <i class="fa fa-search"></i>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-dashboard"></i>
                     </a>
-                </li>-->
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-globe"></i>
@@ -39,6 +30,14 @@
                         <li><a href="#">Another notification</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a href="">
+                        <i class="fa fa-search"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
                 <li class='avatar'>
                     <i class="pe-7s-user"></i>
                 </li>

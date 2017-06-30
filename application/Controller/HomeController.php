@@ -13,23 +13,24 @@ namespace Micro\Controller;
 
 use Klein\ServiceProvider;
 use Micro\Controller\BaseController;
+use Micro\Core\Application;
 
 class HomeController extends BaseController {
 
-    public function index($req, $res, $service, $app)
+    public function index()
     {
         // load views
-        $service->render(getPath('views') . 'home/index.php');
+        Application::$service->render(getPath('views') . 'home/index.php');
     }
 
-    public function exampleOne($req, $res, $service, $app)
+    public function exampleOne()
     {
           // load views
-        $service->render(getPath('views') . 'home/example_one.php');
+        Application::$service->render(getPath('views') . 'home/example_one.php');
     }
 
-    public function exampleTwo($req, $res, $service, $app)
+    public function exampleTwo()
     {
-        $service->render(getPath('views') . 'home/example_two.php');
+        Application::$service->render(getPath('views') . 'home/example_two.php');
     }
 }

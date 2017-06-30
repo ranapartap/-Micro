@@ -6,6 +6,11 @@ use Micro\Controller\RouteController;
 
 class Application
 {
+    static $request;
+    static $response;
+    static $service;
+    static $app;
+    static $router;
 
     /**
      * "Start" the application:
@@ -13,6 +18,7 @@ class Application
      */
     public function __construct()
     {
-        $this->Router = new RouteController();
+//        $this->Router = new RouteController();
+        self::$router = new RouteController();
     }
 }

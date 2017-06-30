@@ -4,14 +4,15 @@
  * these variables are set by our Router, You can read more on https://github.com/klein/klein.php
  * We have pass these variables to our controller functions to act on Request, Response, Services and App
  *
- * @param type $req - Request Object - Like URI, Request Parameters etc.
- * @param type $res - Respond to all requests like get, put, handle uri requests etc.
- * @param type $service - Handle Views etc.
- * @param type $app - Custom declared global variables
+ * @param type Application::$request - Request Object - Like URI, Request Parameters etc.
+ * @param type Application::$response - Respond to all requests like get, put, handle uri requests etc.
+ * @param type Application::$service - Handle Views etc.
+ * @param type Application::$app - Custom declared global variables
  */
 namespace Micro\Controller;
 
 use Micro\Controller\BaseController;
+use Micro\Core\Application;
 
 class AdminUserController extends BaseController {
 
@@ -25,12 +26,12 @@ class AdminUserController extends BaseController {
     /**
      * Index page for admin users listing
      */
-    public function index($req, $res, $service, $app)
+    public function index()
     {
         // load view with PageTitle and Users collection
-        $service->render(getPath('views') . 'admin/users/index.php',
+        Application::$service->render(getPath('views') . 'admin/users/index.php',
                         [   'pageTitle' => "Users",
-                            'users' => $app->db->connection->users->where('is_deleted=?', AdminUserController::USER_DELETE_FALSE)
+                            'users' => Application::$app->db->connection->users->where('is_deleted=?', AdminUserController::USER_DELETE_FALSE)
                         ]
                     );
     }
@@ -38,34 +39,51 @@ class AdminUserController extends BaseController {
     /**
      * Edit user page
      */
-    public function edit($req, $res, $service, $app)
+    public function create()
     {
+        if(Application::$request->method(METHOD_POST))
+            dd('data posted');
+
+        // load view
+        Application::$service->render(getPath('views') . 'admin/users/form.php',
+                        [   'pageTitle' => "Create User",
+                            'method' => METHOD_POST,
+                        ]
+                    );
+    }
+
+    /**
+     * Edit user page
+     */
+    public function edit()
+    {
+
         $error = false;
-        if (!$service->validateParam('id')->isInt()){
-            $service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
+        if (!Application::$service->validateParam('id')->isInt()){
+            Application::$service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
             $error = true;
         }
 
-        if(!$user = $app->db->connection->users("id = ?", $req->param('id'))->fetch()){
-            $service->flash('<strong>Error!</strong> User not found.', 'danger');
+        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
+            Application::$service->flash('<strong>Error!</strong> User not found.', 'danger');
             $error = true;
         }
 
         if($error) {
-            $service->back();
+            Application::$service->back();
             return;
         }
 
-//        dd(['id'=>$req->id(),
-//        'params'=>$req->params(),
-//        'uri'=>$req->uri(),
-//        'id'=>$req->uri(),
-//        'pathname'=>$req->pathname(),
-//        'server'=>$req->server(),
-//        'method'=>$req->method()]);
+//        dd(['id'=>Application::$request->id(),
+//        'params'=>Application::$request->params(),
+//        'uri'=>Application::$request->uri(),
+//        'id'=>Application::$request->uri(),
+//        'pathname'=>Application::$request->pathname(),
+//        'server'=>Application::$request->server(),
+//        'method'=>Application::$request->method()]);
 
         // load view
-        $service->render(getPath('views') . 'admin/users/edit.php',
+        Application::$service->render(getPath('views') . 'admin/users/edit.php',
                         [   'pageTitle' => "Edit Users",
                             'data' => $user,
                             'method' => METHOD_PUT,
@@ -76,38 +94,39 @@ class AdminUserController extends BaseController {
     /**
      * Update user details - Request submitted from User Edit page
      */
-    public function update($req, $res, $service, $app)
+    public function update()
     {
+
         $error = false;
-        if (!$service->validateParam('id')->isInt()){
-            $service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
+        if (!Application::$service->validateParam('id')->isInt()){
+            Application::$service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
             $error = true;
         }
 
-        if(!$user = $app->db->connection->users("id = ?", $req->param('id'))->fetch()){
-            $service->flash('<strong>Error!</strong> User not found.', 'danger');
+        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
+            Application::$service->flash('<strong>Error!</strong> User not found.', 'danger');
             $error = true;
         }
 
         if($error) {
-            $service->back();
+            Application::$service->back();
             return;
         }
 
         $data = [
-                    'fullname' => $req->param('fullname'),
-                    'email' => $req->param('email'),
-                    'mobile' => $req->param('mobile'),
-                    'address' => $req->param('address'),
-                    'about' => $req->param('about'),
+                    'fullname' => Application::$request->param('fullname'),
+                    'email' => Application::$request->param('email'),
+                    'mobile' => Application::$request->param('mobile'),
+                    'address' => Application::$request->param('address'),
+                    'about' => Application::$request->param('about'),
                 ];
 
         if($user->update($data))
-            $service->flash('<strong>Success!</strong> User updated successfully.', 'success');
+            Application::$service->flash('<strong>Success!</strong> User updated successfully.', 'success');
         else
-            $service->flash('<strong>Error!</strong> User not updated.', 'danger');
+            Application::$service->flash('<strong>Error!</strong> User not updated.', 'danger');
 
-        $res->redirect(admin_url('user'));
+        Application::$response->redirect(admin_url('users'));
 
         return;
     }
@@ -115,37 +134,37 @@ class AdminUserController extends BaseController {
     /**
      * Block a user - Update user status as blocked
      */
-    public function block($req, $res, $service, $app)
+    public function block()
     {
         $error = false;
-        if (!$service->validateParam('id')->isInt()){
-            $service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
+        if (!Application::$service->validateParam('id')->isInt()){
+            Application::$service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
             $error = true;
         }
 
-        if (!$service->validateParam('mode')->isInt()){
-            $service->flash('<strong>Error!</strong> Invalid parameters supplied.', 'danger');
+        if (!Application::$service->validateParam('mode')->isInt()){
+            Application::$service->flash('<strong>Error!</strong> Invalid parameters supplied.', 'danger');
             $error = true;
         }
 
-        if(!$user = $app->db->connection->users("id = ?", $req->param('id'))->fetch()){
-            $service->flash('<strong>Error!</strong> User not found.', 'danger');
+        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
+            Application::$service->flash('<strong>Error!</strong> User not found.', 'danger');
             $error = true;
         }
 
         if($error) {
-            $service->back();
+            Application::$service->back();
             return;
         }
 
-        $mode = $req->param('mode') == AdminUserController::USER_STATUS_ACTIVE ? 'Blocked' : "Activated";
+        $mode = Application::$request->param('mode') == AdminUserController::USER_STATUS_BLOCKED ? 'Blocked' : "Activated";
 
-        if($user->update(['status'=>  $req->param('mode')]))
-            $service->flash("<strong>Success!</strong> User {$mode}  successfully.", 'success');
+        if($user->update(['status'=>  Application::$request->param('mode')]))
+            Application::$service->flash("<strong>Success!</strong> User <b>{$mode}</b>  successfully.", 'success');
         else
-            $service->flash('<strong>Error!</strong> updating user status.', 'danger');
+            Application::$service->flash('<strong>Error!</strong> updating user status.', 'danger');
 
-        $res->redirect(admin_url('user'));
+        Application::$response->redirect(admin_url('users'));
 
         return;
     }
@@ -153,23 +172,23 @@ class AdminUserController extends BaseController {
     /**
      * Delete a user - Update user status as deleted
      */
-    public function ajaxDelete($req, $res, $service, $app)
+    public function ajaxDelete()
     {
         $error = false;
-        if (!$service->validateParam('id')->isInt()){
-            $res->json(['error' => 'Invalid user ID supplied.']);
+        if (!Application::$service->validateParam('id')->isInt()){
+            Application::$response->json(['error' => 'Invalid user ID supplied.']);
             return;
         }
 
-        if(!$user = $app->db->connection->users("id = ?", $req->param('id'))->fetch()){
-            $res->json(['error' => 'User not found.']);
+        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
+            Application::$response->json(['error' => 'User not found.']);
             return;
         }
 
         if($err = $user->update(['is_deleted'=> AdminUserController::USER_DELETE_TRUE]))
-            $res->json(['success' => 1, 'status' => $err]);
+            Application::$response->json(['success' => 1, 'status' => $err]);
         else
-            $res->json(['error' => 'User not deleted', 'status' => $err]);
+            Application::$response->json(['error' => 'User not deleted', 'status' => $err]);
 
         return;
     }

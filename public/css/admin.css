@@ -17,5 +17,10 @@ select.input-sm {
     padding-top: 0;
     padding-bottom: 0;
 }
+.alert {
+    border-radius: 4px;
+}
 
-.dataTable  tfoot select.form-control { height: 30px; }
+.dataTable tfoot select.form-control,
+.dataTableWrapper .dataTables_length select,
+.dataTableWrapper .dataTables_filter input { height: 30px; padding: 0 12px;}

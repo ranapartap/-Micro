@@ -53,7 +53,7 @@ class SessionManager {
     /**
      * Start the session if not started
      */
-    public function Clear() {
+    public function clearSession() {
          //Start the session, if not started yet
        if (session_id() === '')
             session_start();

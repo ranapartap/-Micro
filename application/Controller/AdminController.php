@@ -12,14 +12,14 @@
 namespace Micro\Controller;
 
 use Micro\Controller\BaseController;
-
+use Micro\Core\Application;
 
 class AdminController extends BaseController {
 
-    public function index($req, $res, $service, $app)
+    public function index()
     {
         // load views
-        $service->render(getPath('views') . 'admin/index.php',
+        Application::$service->render(getPath('views') . 'admin/index.php',
                 [   'pageTitle' => "Dashboard"
                 ]);
     }

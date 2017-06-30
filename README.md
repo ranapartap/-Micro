@@ -27,8 +27,8 @@ Micro is easy and micro.
 - Simple and clean structure
 - Easy to understand
 - Klein makes beautiful and clean URLs
-- Demo CRUD user management: Create, Read, Delete, Update, Block Actions
-- User Profile Editor
+- User Management demo CRUD : Create, Read, Update, Delete, Block user actions
+- User Profile edit page
 - AJAX calls
 - Tried to follow PSR guidelines
 - NotORM database library to pass a clean and structural database actions.
