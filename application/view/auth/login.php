@@ -14,6 +14,7 @@
                     <hr>
                 </div>
                 <div class="panel-body">
+                    <?= $this->partial(getPath('views') . 'admin/_flashes.php') ?>
                     <div class="row">
                         <div class="col-lg-12">
                             <form id="login-form"  method="post" role="form" style="display: block;">

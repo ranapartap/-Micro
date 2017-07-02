@@ -24,7 +24,7 @@ class SessionManager {
      * @param string $key (optional) Value required for key
      * @return Key value if found, Full Session if $key not set, false if session not available
      */
-    public function getSession() {
+    public function getSession($key = null) {
         //Start the session
        if (session_id() === '')
             session_start();
@@ -33,8 +33,16 @@ class SessionManager {
         if (!isset($_SESSION[SESSION_KEY]) )
             return false;
 
-        // All set return required Key value
-        return arrayToObject($_SESSION[SESSION_KEY]);
+        // $key is not provided, return full session
+        if(!$key)
+            return arrayToObject($_SESSION[SESSION_KEY]);
+
+        // $key not exist
+        if(!isset($_SESSION[SESSION_KEY][$key]))
+            return false;
+
+        return $_SESSION[SESSION_KEY][$key];
+
     }
 
     /**

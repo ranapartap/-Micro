@@ -6,12 +6,12 @@
 
     <div class="logo">
         <a href="<?= get_url(ADMIN_BASE) ?>" class="logo-text">
-            <?= SIDEBAR_TITLE ?>
+            <?= SITE_TITLE ?>
         </a>
     </div>
     <div class="logo logo-mini">
         <a href="<?= get_url(ADMIN_BASE) ?>" class="logo-text">
-            <?= SIDEBAR_TITLE_MINI ?>
+            <?= SITE_TITLE_MINI ?>
         </a>
     </div>
 

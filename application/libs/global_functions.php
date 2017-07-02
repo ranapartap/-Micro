@@ -57,11 +57,20 @@ function curent_url_verify($path = null) {
     return ltrim(URI, '/') == ADMIN_BASE . ($path && $path != '' ? URL_SEPARATOR . $path : '');
 }
 
-function get_username($id = null) {
-    $session = new \Micro\Core\SessionManager();
-    if (!$id and isset($session->getSession()->user->user_name)) {
-        return $session->getSession()->user->user_name;
+function get_username($user_id = null) {
+
+    if(!$user_id) {
+        $session = new \Micro\Core\SessionManager();
+        $user = $session->getSession()->user;
+    } else {
+        if(!$user = Micro\Core\Application::$app->db->connection->users("id = ?",$user_id )->fetch())
+            return false;
+
+        $user = fetch_row($user);
     }
+
+    if ($user)
+        return empty($user->fullname) ? $user->username : $user->fullname;
 
     return '';
 }
@@ -162,4 +171,21 @@ function site_url($location = false) {
         return $url;
 
     return $url . $location . '/';
+}
+
+/**
+ * NotORM - Fetch a single from NotORM single result object
+ * @param type $notORM_object
+ * @return object $row
+ */
+function fetch_row($notORM_object) {
+
+    if(!is_object($notORM_object))
+        return false;
+
+    foreach ($notORM_object as $key=>$user_channel) {
+        $array[$key] = $user_channel;
+    }
+
+    return arrayToObject($array);
 }

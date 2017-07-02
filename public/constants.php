@@ -1,8 +1,8 @@
 <?php
 
-define('SITE_TITLE', 'Micro - a quickstart Core PHP skeleton application.');
-define('SIDEBAR_TITLE', 'Micro');
-define('SIDEBAR_TITLE_MINI', 'MI');
+define('SITE_TITLE_DESC', 'Micro - a quickstart Core PHP skeleton application.');
+define('SITE_TITLE', 'Micro');
+define('SITE_TITLE_MINI', 'MI');
 
 // set a constant that holds the project's folder path, like "/var/www/".
 // DIRECTORY_SEPARATOR adds a slash to the end of the path
@@ -33,8 +33,8 @@ define('URL_ADD_POST_SLASH', FALSE);
 define('ADMIN_BASE', 'home');
 
 // set user roles
-const ROLE_USER         = 0;
-const ROLE_ADMIN        = 1;
+const ROLE_USER         = 1;
+const ROLE_ADMIN        = 2;
 const ROLE_ARRAY        = [ROLE_USER => "USER", ROLE_ADMIN => "ADMIN"];
 
 //API Request Methods

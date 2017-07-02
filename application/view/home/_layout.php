@@ -2,40 +2,87 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>MINI3</title>
+        <title><?= SITE_TITLE_DESC ?></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- JS -->
-        <!-- please note: The JavaScript files are loaded in the footer to speed up page construction -->
-        <!-- See more here: http://stackoverflow.com/q/2105327/1114320 -->
+        <link href="<?= get_url('css') ?>bootstrap.min.css" rel="stylesheet">
+        <link href="<?= get_url('css') ?>animate.min.css" rel="stylesheet">
+        <link href="<?= get_url('css/front') ?>style.css" rel="stylesheet">
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-        <!-- CSS -->
-        <link href="<?php echo URL; ?>css/style.css" rel="stylesheet">
+
     </head>
-    <body>
-        <!-- logo, check the CSS file for more info how the logo "image" is shown -->
-        <div class="logo"></div>
-        <?= $this->yieldView(); ?>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="row">
+                <div class="site-logo">
+                    <a href="<?= get_url('', FALSE) ?>" class="brand"><img src="/img/front/logo.png" height="60"></a>
+                </div>
 
-        <!-- navigation -->
-        <div class="navigation">
-            <a href="<?= admin_url('', FALSE) ?>">Login Here</a>
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="<?= get_url('', FALSE) ?>">Home</a></li>
+                        <li><a href="<?= get_url('features', FALSE) ?>">Features</a></li>
+                        <li><a class="btn btn-danger" href="<?= admin_url('')?>">Login</a></li>
+                    </ul>
+                </div>
+                <!-- /.Navbar-collapse -->
+            </div>
         </div>
-        <div class="navigation">
-            <a href="<?= get_url('exampleone' , FALSE) ?>">Example 1 Page</a>
+    </nav>
+    <!-- logo, check the CSS file for more info how the logo "image" is shown -->
+    <div class="logo"></div>
+
+
+    <?= $this->yieldView(); ?>
+
+    <footer id="footer" class="midnight-blue">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+<!--                    <div class="text-center">
+                        <a href="#home" class="scrollup"><i class="fa fa-angle-up fa-3x"></i></a>
+                    </div>-->
+                    &copy; Micro. All Rights Reserved.
+                    <div class="credits">
+                        <a href="javascript:;">Developed By </a> <a href="javascript:;">Rana Partap</a>
+                    </div>
+                </div>
+
+                <div class="top-bar">
+                    <div class="col-lg-12">
+                        <div class="social">
+                            <ul class="social-share">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                                <li><a href="#"><i class="fa fa-skype"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </footer><!--/#footer-->
 
-        <!-- jQuery, loaded in the recommended protocol-less way -->
-        <!-- more http://www.paulirish.com/2010/the-protocol-relative-url/ -->
-        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-        <!-- define the project's URL (to make AJAX calls possible, even when using this in sub-folders etc) -->
-        <script>
-            var url = "<?php echo URL; ?>";
-        </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-        <!-- our JavaScript -->
-        <script src="<?php echo URL; ?>js/application.js"></script>
-    </body>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+   <script src="<?= get_url('js') ?>bootstrap.min.js" type="text/javascript"></script>
+   <script src="<?= get_url('js') ?>jquery.easing.min.js" type="text/javascript"></script>
+
+</body>
 </html>
