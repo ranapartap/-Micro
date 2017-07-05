@@ -1,9 +1,5 @@
 <?php
 /**
- * Configuration
- */
-
-/**
  * Configuration for: Error reporting
  */
 define('ENVIRONMENT', 'development');
@@ -33,5 +29,5 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8');
 
-define('URI', rtrim( isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO']:'', '/'));
+//define('URI', rtrim( isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO']:'', '/'));
 

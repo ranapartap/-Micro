@@ -1,14 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <link rel="icon" type="image/png" href="assets/img/favicon.ico">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
-        <title><?= SITE_TITLE_DESC ?></title>
-
-        <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-        <meta name="viewport" content="width=device-width" />
+         <?= $this->partial(getPath('views') . 'common/_head.php') ?>
 
         <!-- Bootstrap core CSS     -->
         <link href="<?= get_url('css') ?>bootstrap.min.css" rel="stylesheet">
@@ -25,10 +18,6 @@
         <link href="<?= get_url('css') ?>pe-icon-7-stroke.css" rel="stylesheet" />
 
         <script src="<?= get_url('js') ?>jquery-1.11.1.min.js"></script>
-        <script>
-                var ajaxurl = "<?= URL ?>";
-                var currenturl = "<?= URI ?>";
-        </script>
 
     </head>
     <body>
@@ -69,6 +58,7 @@
     <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
     <script src="<?= get_url('js') ?>light-bootstrap-dashboard.js"></script>
     <script src="<?= get_url('js') ?>sweetalert.min.js"></script>
+    <script src="<?= get_url('js') ?>validator.min.js"></script>
     <!--<script src="<?= get_url('js') ?>demo.js"></script>-->
 
     <script type="text/javascript">

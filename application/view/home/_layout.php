@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
-        <title><?= SITE_TITLE_DESC ?></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <?= $this->partial(getPath('views') . 'common/_head.php') ?>
 
         <link href="<?= get_url('css') ?>bootstrap.min.css" rel="stylesheet">
         <link href="<?= get_url('css') ?>animate.min.css" rel="stylesheet">
         <link href="<?= get_url('css/front') ?>style.css" rel="stylesheet">
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-
 
     </head>
 </head>
@@ -76,6 +72,7 @@
         </div>
     </footer><!--/#footer-->
 
+</body>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -83,6 +80,4 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
    <script src="<?= get_url('js') ?>bootstrap.min.js" type="text/javascript"></script>
    <script src="<?= get_url('js') ?>jquery.easing.min.js" type="text/javascript"></script>
-
-</body>
 </html>

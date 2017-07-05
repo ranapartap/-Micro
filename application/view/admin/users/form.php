@@ -3,16 +3,17 @@
         <div class="card">
 
             <div class="header">
-                <h4 class="title"><?=$this->pageTitle?></h4>
+                <h4 class="title"><?= $this->pageTitle ?></h4>
             </div>
 
             <div class="content">
-                <form  method="post">
+                <form id="frmUser" method="post" data-toggle="validator" role="form">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                               <label>Username(disabled)</label>
-                                <input type="text" class="form-control" disabled placeholder="Username" value="<?= $this->data['username'] ?>">
+                                <label>Username<?= ($this->method == METHOD_PUT) ? '(disabled)' : '' ?></label>
+                                <input required data-validate="false" data-error="Username length 5-20 characters" type="text" <?= ($this->method == METHOD_PUT) ? '' : 'name="username" id="username"' ?> class="form-control" <?= ($this->method == METHOD_PUT) ? 'disabled' : '' ?> placeholder="Username" value="<?= $this->data['username'] ?>">
+                                <span class="help-block with-errors"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -27,13 +28,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="text" name="email" class="form-control" placeholder="Email" value="<?= $this->data['email'] ?>">
+                                <input required type="email" name="email" id="email" class="form-control" placeholder="Email" value="<?= $this->data['email'] ?>">
+                                <span class="help-block with-errors"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Mobile</label>
-                                <input type="text" name="mobile" class="form-control" placeholder="Mobile" value="<?= $this->data['mobile'] ?>">
+                                <input  type="text" name="mobile" class="form-control" placeholder="Mobile" value="<?= $this->data['mobile'] ?>">
                             </div>
                         </div>
                     </div>
@@ -55,10 +57,13 @@
                             </div>
                         </div>
                     </div>
+
                     <input type="hidden" name="_method" value="<?= $this->method ?>" />
                     <a href="<?= admin_url('users') ?>" class="btn btn-danger btn-fill">Cancel</a>
-                    <button type="submit" class="btn btn-info btn-fill"><?= ($this->method == METHOD_POST) ?'Create Now':'Update Profile'?></button>
+                    <button disabled type="submit" class="btn btn-info btn-fill btn-submit-form"><?= ($this->method == METHOD_POST) ? 'Create Now' : 'Update Profile' ?></button>
+
                     <div class="clearfix"></div>
+
                 </form>
             </div>
         </div>
@@ -94,3 +99,66 @@
     </div>
 
 </div>
+
+<script>
+
+var valid_username;
+var valid_email;
+
+$('#username, #email').on('blur', function(){
+    var el =  this;
+    var field = $(this).attr('id');
+    $(this).parent('.form-group').children('.help-block').text('Checking '+$(this).attr('id')+'...').removeClass('hidden').removeClass('text-danger').removeClass('text-success').addClass('text-info');
+    $(this).parent('.form-group').removeClass('has-error');
+
+     $.ajax({
+        type: "post",
+        url: currenturl+'/validateusercreate',
+        data: { _method: "<?= METHOD_POST ?>",
+                field: $(this).attr('id'),
+                value: $(this).val()
+            },
+        dataType: "json",
+        success: function (data) {}
+    }).done(function (data) {
+        console.log(data);
+
+        if (data.error) {
+            window['valid_'+field] = false;
+            $(el).parent('.form-group').addClass('has-error');
+            $(el).parent('.form-group').children('.help-block').text(data.error).addClass('text-danger').removeClass('text-info');
+        } else {
+            window['valid_'+field] = true;
+            $(el).parent('.form-group').children('.help-block').text(data.success).addClass('text-success').removeClass('text-info');
+        }
+        enable_submit();
+    }).error(function (data) {
+            window['valid_'+field] = false;
+        enable_submit();
+        $(el).parent('.form-group').children('.help-block').text('Server Error').addClass('text-danger').removeClass('text-info');
+    });
+});
+
+function enable_submit() {
+    if (!valid_username || !valid_email) return;
+    $('.btn-submit-form').removeAttr('disabled');
+
+}
+
+$(document).ready(function() {
+
+// $('#frmUser').validator();
+ $('#frmUser').validator(
+            {
+                custom: {
+                    validateuser: function ($el, $ev) {
+                        var matchValue = $el.data("username") // foo
+                        if ($el.val() !== matchValue) {
+                            return "Hey, that's not valid! It's gotta be " + matchValue
+                        }
+                    }
+                }
+
+            });
+})
+</script>

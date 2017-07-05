@@ -10,7 +10,9 @@ class Application
     static $response;
     static $service;
     static $app;
+
     static $router;
+
 
     /**
      * "Start" the application:
@@ -21,4 +23,5 @@ class Application
 //        $this->Router = new RouteController();
         self::$router = new RouteController();
     }
+
 }

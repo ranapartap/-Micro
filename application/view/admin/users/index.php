@@ -34,21 +34,26 @@
                         <?php foreach ($this->users as $key => $user) : ?>
                             <tr  id="dt-row-<?= $user['id'] ?>" class="dt-row <?= $user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ? 'text-danger' : '' ?> ">
                                 <td><?= $user['id'] ?></td>
-                                <td><?= $user['username'] ?></td>
+                                <td><?= $user['username'] ?>
+                                    <div class="edit-buttons">
+                                        <a href="<?= admin_url('user/') . $user['id']; ?>">Edit</a>
+                                                    <!--class="btn btn-xs btn-danger btn-fill "-->
+                                    <?php if ($user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
+                                        | <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" >Block</a>
+
+                                    <?php } else { ?>
+                                        | <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" >Activate</a>
+
+                                    <?php } ?>
+                                        | <a href="javascript:;" class="delete-user" fullname="<?= $user['fullname'] ?>" id="<?= $user['id'] ?>">Delete</a>
+                                    </div>
+                                </td>
                                 <td><?= $user['fullname'] ?></td>
                                 <td><?= $user['mobile'] ?></td>
                                 <td><?= $user['email'] ?></td>
                                 <td><?= \Micro\Controller\AdminUserController::USER_STATUS_ARRAY[$user['status']] ?></td>
                                 <td>
-                                    <a href="<?= admin_url('user/') . $user['id']; ?>" class="btn btn-xs btn-info btn-fill ">Edit</a>
 
-                                    <?php if ($user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
-                                        <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" class="btn btn-xs btn-danger btn-fill ">Block</a>
-                                    <?php } else { ?>
-                                        <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" class="btn btn-xs btn-success btn-fill ">Activate</a>
-                                    <?php } ?>
-
-                                    <button class="btn btn-xs btn-warning btn-fill delete-user" fullname="<?= $user['fullname'] ?>" id="<?= $user['id'] ?>">Delete</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -73,23 +78,32 @@
                     var column = this;
                     if ($(column.footer()).attr('class'))
                         return;
-                    console.log($(column.footer()).attr('class'));
+//                    console.log($(column.footer()).attr('class'));
 
                     var select = $('<select class="form-control input-xs no-padding-tb"><option value=""></option></select>')
                             .appendTo($(column.footer()).empty())
                             .on('change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                        $(this).val()
-                                        );
-                                column
-                                        .search(val ? '^' + val + '$' : '', true, false)
-                                        .draw();
+//                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+//                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                var val = $("<div>"+$(this).val()+"</div>").find("div.edit-buttons").remove().end().text().trim();
+                                column.search(val).draw();
                             });
                     column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
+                        var dd = $("<div>"+d+"</div>").find("div.edit-buttons").remove().end().text().trim();
+                        select.append('<option value="' + dd + '">' + dd + '</option>')
                     });
                 });
             }
+        });
+
+        jQuery(document).ready(function() {
+            jQuery('#dt-users').
+              on('mouseover', 'tr', function() {
+                  jQuery(this).find('.edit-buttons').show();
+              }).
+              on('mouseout', 'tr', function() {
+                  jQuery(this).find('.edit-buttons').hide();
+              });
         });
 
         $('.delete-user').click(function () {

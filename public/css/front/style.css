@@ -398,7 +398,7 @@ p {
 }
 
 #about  {
-	margin-top:80px;
+	margin-top: 40px;
 	margin-bottom:40px;
 }
 
@@ -628,4 +628,9 @@ textarea#message{
 }
 .panel-heading.collapsed .fa:before {
     content: "\f054";   
+}
+
+.site-logo {
+    text-align: center;
+    margin-bottom: 20px;
 }

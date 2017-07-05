@@ -12,6 +12,7 @@
     "minimum-stability": "dev",
     "require": {
             "klein/klein": "*",
+            "vlucas/valitron": "*",
             "vrana/notorm":"dev-master"
         },
     "autoload":

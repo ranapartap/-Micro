@@ -6,7 +6,7 @@ foreach($this->flashes() as $type=>$messages) {
         ?>
 
         <div class="flash-messages alert alert-<?= $type ?> alert-dismissable">
-            <h5><?= $msg ?></h5>
+            <p><?= $msg ?></p>
         </div>
 
         <?php

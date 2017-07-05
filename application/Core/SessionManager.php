@@ -58,6 +58,7 @@ class SessionManager {
             $_SESSION[SESSION_KEY] = [];
     }
 
+
     /**
      * Start the session if not started
      */
@@ -68,6 +69,7 @@ class SessionManager {
 
        unset($_SESSION[SESSION_KEY]);
     }
+
 
 
 }

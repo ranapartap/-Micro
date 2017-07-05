@@ -1,5 +1,4 @@
 <?php
-
 //namespace Micro\Libs;
 //use Micro\Core\SessionManager;
 
@@ -34,7 +33,7 @@ function getPath($directory) {
  */
 function get_url($path, $add_post_slash = true) {
 
-    return URL . $path . ($add_post_slash ? URL_SEPARATOR : '' );
+    return URL . URL_SEPARATOR . $path . ($add_post_slash || URL_ADD_POST_SLASH ? URL_SEPARATOR : '' );
 }
 
 /**
@@ -45,7 +44,7 @@ function get_url($path, $add_post_slash = true) {
  */
 function admin_url($path = null, $add_post_slash = true) {
 
-    return URL . ADMIN_BASE . ($path && $path != '' ? URL_SEPARATOR . $path : '') . ($add_post_slash && URL_ADD_POST_SLASH ? URL_SEPARATOR : '' );
+    return URL . URL_SEPARATOR . ADMIN_BASE . ($path && $path != '' ? URL_SEPARATOR . $path : '') . ($add_post_slash && URL_ADD_POST_SLASH ? URL_SEPARATOR : '' );
 }
 
 /**
@@ -59,11 +58,11 @@ function curent_url_verify($path = null) {
 
 function get_username($user_id = null) {
 
-    if(!$user_id) {
+    if (!$user_id) {
         $session = new \Micro\Core\SessionManager();
         $user = $session->getSession()->user;
     } else {
-        if(!$user = Micro\Core\Application::$app->db->connection->users("id = ?",$user_id )->fetch())
+        if (!$user = Micro\Core\Application::$app->db->connection->users("id = ?", $user_id)->fetch())
             return false;
 
         $user = fetch_row($user);
@@ -108,7 +107,7 @@ function error_exit($error, $description = null) {
     ?>
     <style>
         .content {
-                -webkit-font-smoothing: antialiased;
+            -webkit-font-smoothing: antialiased;
             font-family: Georgia, serif;
             width: 90%;
             margin: 40px auto;
@@ -121,14 +120,12 @@ function error_exit($error, $description = null) {
     </style>
 
     <div class="content">
-            <h2><?= $error ?></h2>
-            <?= $description ? "<p>".$description."</p>":'' ?>
+        <h2><?= $error ?></h2>
+        <?= $description ? "<p>" . $description . "</p>" : '' ?>
     </div>
     <?php
     exit;
-
 }
-
 
 /**
  * Get base url as per parameters provided
@@ -160,12 +157,11 @@ function base_url($root_only = false, $atCore = false) {
     return $base_url;
 }
 
-
 /**
  * Get site url
  */
 function site_url($location = false) {
-    $url = base_url(true);
+    $url = rtrim(base_url(), '/');
 
     if (!$location)
         return $url;
@@ -180,12 +176,43 @@ function site_url($location = false) {
  */
 function fetch_row($notORM_object) {
 
-    if(!is_object($notORM_object))
+    if (!is_object($notORM_object))
         return false;
 
-    foreach ($notORM_object as $key=>$user_channel) {
+    foreach ($notORM_object as $key => $user_channel) {
         $array[$key] = $user_channel;
     }
 
     return arrayToObject($array);
+}
+
+/**
+ *
+ */
+function errors_to_string($errors) {
+    $error = '';
+    foreach ($errors as $key => $field) {
+//        $error .= "<h6>" . ucwords($key) . "</h6><ul>";
+        $error .= "<ul>";
+        foreach ($field as $k => $err) {
+            $error .= "<li>" . $err . "</li>";
+        }
+        $error .= "</ul>";
+    }
+
+    return $error;
+}
+
+/**
+ * Create the slug from string
+ * @param type $str String to slugify
+ * @return type
+ */
+function slug_create( $str ) {
+    $search = array('Ș', 'Ț', 'ş', 'ţ', 'Ş', 'Ţ', 'ș', 'ț', 'î', 'â', 'ă', 'Î', 'Â', 'Ă', 'ë', 'Ë');
+    $replace = array('s', 't', 's', 't', 's', 't', 's', 't', 'i', 'a', 'a', 'i', 'a', 'a', 'e', 'E');
+    $str = str_ireplace($search, $replace, strtolower(trim($str)));
+    $str = preg_replace('/[^\w\d\-\ ]/', '', $str);
+    $str = str_replace(' ', '-', $str);
+    return preg_replace('/\-{2,}/', '-', $str);
 }

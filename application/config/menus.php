@@ -70,6 +70,12 @@ $admin_menus =  [
                                                                     'action' => 'block'
                                                                 ],
 
+                                                                // Validate username "www.example.com/admin/user/validateusername"
+                                                                [   'method' => [ METHOD_POST ],
+                                                                    "route" => '/user/validateusercreate',
+                                                                    'action' => 'ajaxValidateusercreate'
+                                                                ],
+
                                                             ],
                                 ],
 ];

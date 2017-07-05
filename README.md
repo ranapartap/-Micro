@@ -20,6 +20,7 @@ Micro is easy and micro.
 - MVC Structure
 - Klein Router Library
 - NotORM Database Library
+- Valitron PHP Validation Library
 - PSR-4 autoloader
 - Creative Tim bootstrap lightweight admin panel
 

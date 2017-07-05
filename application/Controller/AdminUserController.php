@@ -1,18 +1,13 @@
 <?php
 /**
- * There are some variables attached to every function which is called from RouterController,
- * these variables are set by our Router, You can read more on https://github.com/klein/klein.php
- * We have pass these variables to our controller functions to act on Request, Response, Services and App
- *
- * @param type Application::$request - Request Object - Like URI, Request Parameters etc.
- * @param type Application::$response - Respond to all requests like get, put, handle uri requests etc.
- * @param type Application::$service - Handle Views etc.
- * @param type Application::$app - Custom declared global variables
+ * Admin User Controller
+ * Handles the requests for Users/User module for Admin Panle
  */
 namespace Micro\Controller;
 
 use Micro\Controller\BaseController;
 use Micro\Core\Application;
+use Valitron\Validator;
 
 class AdminUserController extends BaseController {
 
@@ -22,6 +17,15 @@ class AdminUserController extends BaseController {
 
     const USER_DELETE_FALSE = 0;
     const USER_DELETE_TRUE = 1;
+
+    const USERNAME_MIN_LEN = 4;
+    const USERNAME_MAX_LEN = 100;
+
+    public  $rules = [
+                    'username' => ['required', 'alphaNum',  ['lengthMin', self::USERNAME_MIN_LEN], ['lengthMax', self::USERNAME_MAX_LEN] ],
+                    'mobile' => ['required', 'alphaNum',  ['lengthMin', 8], ['lengthMax', 20] ],
+                    'email'=>['email']
+                    ];
 
     /**
      * Index page for admin users listing
@@ -36,13 +40,64 @@ class AdminUserController extends BaseController {
                     );
     }
 
+    public function validate() {
+
+
+
+        $v->mapFieldsRules($rules);
+
+        if(!$v->validate())
+            return $v;
+
+        return true;
+    }
+
+
     /**
      * Edit user page
      */
     public function create()
     {
-        if(Application::$request->method(METHOD_POST))
-            dd('data posted');
+
+//        dd(['id'=>Application::$request->id(),
+//        'params'=>Application::$request->params(),
+//        'uri'=>Application::$request->uri(),
+//        'pathname'=>Application::$request->pathname(),
+//        'server'=>Application::$request->server(),
+//        'method'=>Application::$request->method()]);
+
+        //Form is submitted
+        if(Application::$request->method(METHOD_POST)){
+
+            if($user = Application::$app->db->connection->users("username = ? || email= ?", [Application::$request->username, Application::$request->email ])->fetch()){
+                Application::$service->flash('<strong>Error!</strong> Duplicate username/email.', 'danger');
+                $error = true;
+            }
+
+            $valid = new Validator($_POST);
+            $valid->mapFieldsRules($this->rules);
+
+            if($valid->validate()){
+//                $users =  Application::$app->db->connection->users();
+                $data = array(
+                    "username" => Application::$request->username,
+                    "fullname" => Application::$request->fullname,
+                    "email" => Application::$request->email,
+                    "mobile" => Application::$request->mobile,
+                );
+
+                if($result =  Application::$app->db->connection->users()->insert($data)){
+                    Application::$service->flash('<strong>Success!</strong> User added successfully.', 'success');
+                }
+
+            } else {
+                Application::$service->flash(errors_to_string($valid->errors() ), 'danger');
+                Application::$service->refresh();
+                return;
+            }
+        }
+
+        Application::$response->redirect(admin_url('users'));
 
         // load view
         Application::$service->render(getPath('views') . 'admin/users/form.php',
@@ -70,17 +125,10 @@ class AdminUserController extends BaseController {
         }
 
         if($error) {
-            Application::$service->back();
+            Application::$response->redirect(admin_url('users'));
             return;
         }
 
-//        dd(['id'=>Application::$request->id(),
-//        'params'=>Application::$request->params(),
-//        'uri'=>Application::$request->uri(),
-//        'id'=>Application::$request->uri(),
-//        'pathname'=>Application::$request->pathname(),
-//        'server'=>Application::$request->server(),
-//        'method'=>Application::$request->method()]);
 
         // load view
         Application::$service->render(getPath('views') . 'admin/users/edit.php',
@@ -170,7 +218,7 @@ class AdminUserController extends BaseController {
     }
 
     /**
-     * Delete a user - Update user status as deleted
+     * Delete a user - ajax call Update user status as deleted
      */
     public function ajaxDelete()
     {
@@ -191,6 +239,33 @@ class AdminUserController extends BaseController {
             Application::$response->json(['error' => 'User not deleted', 'status' => $err]);
 
         return;
+    }
+
+    /**
+     * Validate username ajax call
+     */
+    public function ajaxValidateusercreate()
+    {
+        $field = trim(Application::$request->field);
+        $value = trim(Application::$request->value);
+
+        if ( $field == "username" && (strlen($value) < AdminUserController::USERNAME_MIN_LEN
+                || strlen($value) > AdminUserController::USERNAME_MAX_LEN )) {
+
+            Application::$response->json(['error' => 'Required length is ['.AdminUserController::USERNAME_MIN_LEN.' - '.AdminUserController::USERNAME_MAX_LEN.']']);
+            return;
+        }
+
+        if( !$user = Application::$app->db->connection->users("{$field} = ?", $value )->fetch() ){
+
+            Application::$response->json(['success' => "{$field} available"]);
+            return;
+        } else {
+
+            Application::$response->json(['error' => "{$field} already exists"]);
+            return;
+        }
+
     }
 
 

@@ -21,6 +21,21 @@ select.input-sm {
     border-radius: 4px;
 }
 
+.dataTable .edit-buttons{
+    display:none;
+    }
+.dataTable .edit-buttons a{
+    color:#58a9ca;
+       font-family:"Helvetica Neue",Arial,sans-serif;
+}    
+.dataTable{
+    font-family:"Helvetica Neue",sans-serif;
+    font-size:12px;
+    font-weight:normal;
+}
+.dataTable tr>td{
+    vertical-align: top;
+}
 .dataTable tfoot select.form-control,
 .dataTableWrapper .dataTables_length select,
 .dataTableWrapper .dataTables_filter input { height: 30px; padding: 0 12px;}
