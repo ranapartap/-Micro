@@ -45,26 +45,27 @@ Micro is easy and micro.
 
 ## Installation
 
-1. Install via composer:
+ - Install via composer:
 `composer create-project ranapartap/micro`
-2. Edit the database credentials in `application/config/config.php`
-3. Create the required SQL database/tables with .sql statements in the `_install/`-folder
-4. Make sure you have mod_rewrite activated on your server/in your server environment.
-5. Install composer and run `composer install` in the project's folder to create the PSR-4 autoloading stuff from Composer automatically.
+ - Edit the database credentials in `application/config/config.php`
+ - Create the required SQL database/tables with .sql statements in the `_install/`-folder
+ - Make sure you have mod_rewrite activated on your server/in your server environment.
+ - Install composer and run `composer install` in the project's folder to create the PSR-4 autoloading stuff from Composer automatically.
 	- Basically composer install the required support libraries like Klien Router/NoORM and othrs etc.
 	- Also autolad the application PSR-4  system which works just like "include filename.php" all over our projects to include and use anything. PSR is the modern, clean and automatic version of old school "include" command.
-6. Open `micro\public` folder and run `serve.bat` batch file. It will start the server at `http://localhost:8081`. You can type this address in browser and application will starts. (Make sure you have set path `php` path in you local environment correctly to run php, You can check the same by typing "php" on command prompt. If it does not give any error like (Windows 10) `php is not recognized as an internal or external command, operable program or batch file.)`. Then everything is fine and server will be started.
+ - Open `micro\public` folder and run `serve.bat` batch file. It will start the server at `http://localhost:8081`. You can type this address in browser and application will starts. (Make sure you have set path `php` path in you local environment correctly to run php, You can check the same by typing "php" on command prompt. If it does not give any error like (Windows 10) `php is not recognized as an internal or external command, operable program or batch file.)`. Then everything is fine and server will be started.
 
     **OR create an virtual host on your machine and use it. It is easy to create virtual host on Windows 10**
-  - Browse your windows folder (eg: `C:\Windows\System32\drivers\etc`)
-  - Open "hosts" file in notepad
-  - At the end of file just add your local server address and hostname you wish
-      (eg: `127.0.0.1 local-micro.com`)
 
-    NOW apache configuration (on XAMPP)
-  - Browse your apache folder (eg: `Z:\xampp\apache\conf\extra`)
-  - Open `httpd-vhosts.conf` file in notepad
-  - At the end of the file add the following code (obviously update your relative paths)
+ - Browse your windows folder (eg: `C:\Windows\System32\drivers\etc`)
+ - Open "hosts" file in notepad.
+ - At the end of file just add your local server address and hostname you wish (eg: `127.0.0.1 local-micro.com`)
+
+**NOW apache configuration (on XAMPP)**
+
+ - Browse your apache folder (eg: `Z:\xampp\apache\conf\extra`) Open `httpd-vhosts.conf` file in notepad.
+ - At the end of the file add the following code (obviously update your relative paths)
+
 ```<VirtualHost *:80>
       ServerName local-micro.com
       ServerAlias www.local-micro.com
