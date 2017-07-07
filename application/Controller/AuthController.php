@@ -28,13 +28,10 @@ class AuthController extends BaseController {
     public function do_login() {
         $err = '';
 
-        if (strlen(Application::$request->username) < 6 || strlen(Application::$request->username) > 50)
-            $err .= '<strong>Error!</strong> Invalid username.';
-
         if (empty(Application::$request->password))
             $err .= (empty($err) ? '' : '<br>') . '<strong>Error!</strong> Empty Password.';
 
-        if (!$user = Application::$app->db->connection->users("(email = ? OR username = ?) AND password=?", [Application::$request->username, Application::$request->username, Application::$request->password])->fetch())
+        if (!$user = Application::$app->db->connection->users("(email = :un OR username = :un) AND password=:pw", ["un"=>Application::$request->username, "pw"=>Application::$request->password])->fetch())
             $err .= (empty($err) ? '' : '<br>') . '<strong>Error!</strong> Invalid Username/password.';
 
         if (!empty($err)) {

@@ -18,13 +18,14 @@
                             </li>
                         </ul>
 
-                        <div class="tab-content clearfix">
+                        <?= $this->partial(getPath('views') . 'admin/_flashes.php') ?>
 
+                        <div class="tab-content clearfix">
                             <div class="tab-pane active" id="1b">
                                 <div class="content">
                                     <form id="login-form"  method="post" role="form">
                                         <div class="form-group">
-                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
+                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Email/Username" value="">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">

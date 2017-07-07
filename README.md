@@ -77,6 +77,8 @@ Micro is easy and micro.
       </Directory>
     </VirtualHost>
 ```
+## Login credential
+`Username:admin, Password:admin`
 
 **Micro runs without any complex configuration.**
 

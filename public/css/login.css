@@ -46,3 +46,7 @@ body {
     text-align: center;
     margin-bottom: 20px;
 }
+
+.flash-messages{
+    margin:10px;
+}
