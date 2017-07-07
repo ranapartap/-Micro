@@ -65,7 +65,7 @@ Micro is easy and micro.
   - Browse your apache folder (eg: `Z:\xampp\apache\conf\extra`)
   - Open `httpd-vhosts.conf` file in notepad
   - At the end of the file add the following code (obviously update your relative paths)
-    ```<VirtualHost *:80>
+    `<VirtualHost *:80>
       ServerName local-micro.com
       ServerAlias www.local-micro.com
       DocumentRoot "Z:\xampp\htdocs\others\micro\public"
@@ -75,8 +75,7 @@ Micro is easy and micro.
           Order Allow,Deny
           Allow from all
       </Directory>
-    </VirtualHost>
-```
+    </VirtualHost>`
 
 
 Micro runs without any complex configuration.
