@@ -60,6 +60,7 @@ Micro is easy and micro.
   - Open "hosts" file in notepad
   - At the end of file just add your local server address and hostname you wish
       (eg: `127.0.0.1 local-micro.com`)
+
     NOW apache configuration (on XAMPP)
   - Browse your apache folder (eg: `Z:\xampp\apache\conf\extra`)
   - Open `httpd-vhosts.conf` file in notepad
@@ -74,7 +75,8 @@ Micro is easy and micro.
           Order Allow,Deny
           Allow from all
       </Directory>
-    </VirtualHost>```
+    </VirtualHost>
+```
 
 
 Micro runs without any complex configuration.
