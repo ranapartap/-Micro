@@ -20,6 +20,10 @@ body {
 	font-weight: 400;
 }
 
+body.page {
+	margin-top:100px;
+}
+
 p {
 	font-size:16px;
 

@@ -2,59 +2,52 @@
     <div class="col-md-12">
         <div class="card">
             <div class="header">
-                <h4 class="title">Manage Users <a href="<?=admin_url('user')?>" class="btn btn-xs btn-success btn-fill ">Add New User</a></h4>
+                <h4 class="title">Manage Posts <a href="<?=admin_url('post')?>" class="btn btn-xs btn-success btn-fill ">Add New Post</a></h4>
 
                 <!--<p class="category"></p>-->
             </div>
 
             <div class="dataTableWrapper content table-responsive">
-                <table id="dt-users" class="table table-hover table-striped display dataTable dtr-inline">
+                <table id="dt-posts" class="table table-hover table-striped display dataTable dtr-inline">
                     <thead>
                         <th>ID</th>
-                        <th>Username</th>
-                        <th>Fullname</th>
-                        <th>Mobile</th>
-                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Title</th>
                         <th>Status</th>
-                        <th class="no-filter no-sort" >Actions</th>
+                        <th>Created On</th>
+                        <th>Updated On</th>
                     </thead>
 
                     <tfoot>
                         <th>ID</th>
-                        <th>Username</th>
-                        <th>Fullname</th>
-                        <th>Mobile</th>
-                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Title</th>
                         <th>Status</th>
-                        <th class="no-filter no-sort" ></th>
-                    </tfoot>
-
+                        <th>Created On</th>
+                        <th>Updated On</th>
                     <tbody>
 
-                        <?php foreach ($this->users as $key => $user) : ?>
-                            <tr  id="dt-row-<?= $user['id'] ?>" class="dt-row <?= $user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ? 'text-danger' : '' ?> ">
-                                <td><?= $user['id'] ?></td>
-                                <td><?= $user['username'] ?>
+                        <?php foreach ($this->posts as $key => $post) : ?>
+                            <tr  id="dt-row-<?= $post['id'] ?>" class="dt-row">
+                                <td><?= $post['id'] ?></td>
+                                <td><?= POST_TYPE_ARRAY[$post['post_type']] ?></td>
+                                <td><?= $post['title'] ?>
                                     <div class="edit-buttons">
-                                        <a href="<?= admin_url('user/') . $user['id']; ?>">Edit</a>
+                                        <a href="<?= admin_url('post/') . $post['id']; ?>">Edit</a>
                                                     <!--class="btn btn-xs btn-danger btn-fill "-->
-                                    <?php if ($user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
-                                        | <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" >Block</a>
+                                    <?php if ($post['status'] == \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED) { ?>
+                                        | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::POST_STATUS_DISABLED ?>" >Un-publish</a>
 
                                     <?php } else { ?>
-                                        | <a href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" >Un-Block</a>
+                                        | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::USER_STATUS_ACTIVE ?>" >Publish</a>
 
                                     <?php } ?>
-                                        | <a href="javascript:;" class="delete-user" fullname="<?= $user['fullname'] ?>" id="<?= $user['id'] ?>">Delete</a>
+                                        | <a href="javascript:;" class="delete-post" id="<?= $post['id'] ?>">Delete</a>
                                     </div>
                                 </td>
-                                <td><?= $user['fullname'] ?></td>
-                                <td><?= $user['mobile'] ?></td>
-                                <td><?= $user['email'] ?></td>
-                                <td><?= \Micro\Controller\AdminUserController::USER_STATUS_ARRAY[$user['status']] ?></td>
-                                <td>
-
-                                </td>
+                                <td><?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[$post['status']] ?></td>
+                                <td><?= date_format_view($post['created_on'], DATE_FORMAT_SHORT)  ?></td>
+                                <td><?= date_format_view($post['updated_on'], DATE_FORMAT_LONG) ?></td>
                             </tr>
                         <?php endforeach; ?>
 
@@ -69,7 +62,7 @@
 </div>
 <script>
     $(document).ready(function () {
-        var datatable = $('#dt-users').DataTable({
+        var datatable = $('#dt-posts').DataTable({
             responsive: true,
             pageLength: 25,
             columnDefs: [{ targets: 'no-sort', orderable: false }],
@@ -97,7 +90,7 @@
         });
 
         jQuery(document).ready(function() {
-            jQuery('#dt-users').
+            jQuery('#dt-posts').
               on('mouseover', 'tr', function() {
                   jQuery(this).find('.edit-buttons').show();
               }).
@@ -106,14 +99,14 @@
               });
         });
 
-        $('.delete-user').click(function () {
-            var user_id = $(this).attr('id');
-            var datatable = $('#dt-users').DataTable( );
+        $('.delete-post').click(function () {
+            var post_id = $(this).attr('id');
+            var datatable = $('#dt-posts').DataTable( );
             var fullname = $(this).attr('fullname');
 
             swal({
                 title: "Delete " + fullname + " ?",
-                text: "Sure to delete this user?",
+                text: "Sure to delete this post?",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -125,15 +118,15 @@
             }, function () {
                 $.ajax({
                     type: "post",
-                    url: currenturl + "/" + user_id,
+                    url: currenturl + "/" + post_id,
                     data: {_method: "<?= METHOD_DELETE ?>"},
                     dataType: "json",
                     success: function (data) {}
                 }).done(function (data) {
                     console.log(data);
                     if (data.success) {
-                        swal("Deleted!", "User deleted successfully", "success");
-                        datatable.row('#dt-row-' + user_id).remove().draw(false);
+                        swal("Deleted!", "Post deleted successfully", "success");
+                        datatable.row('#dt-row-' + post_id).remove().draw(false);
                     } else {
                         swal("Error!", data.error, "error");
                     }

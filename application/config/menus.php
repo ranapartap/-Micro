@@ -78,6 +78,59 @@ $admin_menus =  [
 
                                                             ],
                                 ],
+                    "Posts" =>  [
+                                    'icon'              => 'pe-7s-news-paper',
+                                    'controller'        => '\Micro\Controller\AdminPostController',
+                                    'url'               => 'posts',
+                                    'sub_menu'          => [
+                                                                'All Posts' => ['url' => 'posts'],
+                                                                'Add New Post' => ['url' => 'post']
+                                                            ],
+                                    "actions"           => [
+                                                                // All users index page "www.example.com/admin/users"
+                                                                [   'method' => METHOD_GET,
+                                                                    "route" => '/posts',
+                                                                    'action' => 'index'
+                                                                ],
+
+                                                                // New user Show/Save "www.example.com/admin/user"
+                                                                [   'method' => [ METHOD_POST, METHOD_GET ],
+                                                                    "route" => '/post',
+                                                                    'action' => 'create'
+                                                                ],
+
+                                                                // Edit user "www.example.com/admin/user/[id]" (user id)
+                                                                [   'method' => METHOD_GET,
+                                                                    "route" => '/post/[i:id]',
+                                                                    'action' => 'edit'
+                                                                ],
+
+                                                                // Save Edited user data "www.example.com/admin/user/[id]" (user id)
+                                                                [   'method' => METHOD_PUT,
+                                                                    "route" => '/post/[i:id]',
+                                                                    'action' => 'update'
+                                                                ],
+
+                                                                // Save Edited user data "www.example.com/admin/user/[id]" (user id)
+                                                                [   'method' => METHOD_DELETE,
+                                                                    "route" => '/post/[i:id]',
+                                                                    'action' => 'ajaxDelete'
+                                                                ],
+
+                                                                // Save Edited user data "www.example.com/admin/user/[id]" (user id)
+                                                                [   'method' => METHOD_GET,
+                                                                    "route" => '/post/block/[i:id]/[i:mode]',
+                                                                    'action' => 'block'
+                                                                ],
+
+                                                                // Validate username "www.example.com/admin/user/validateusername"
+                                                                [   'method' => [ METHOD_POST ],
+                                                                    "route" => '/post/validateusercreate',
+                                                                    'action' => 'ajaxValidateusercreate'
+                                                                ],
+
+                                                            ],
+                                ],
 ];
 
 

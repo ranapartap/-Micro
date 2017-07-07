@@ -13,6 +13,8 @@ class Application
 
     static $router;
 
+    static $pages;
+
 
     /**
      * "Start" the application:

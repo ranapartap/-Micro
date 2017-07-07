@@ -32,6 +32,13 @@ define('URL_ADD_POST_SLASH', FALSE);
 // base URL for admin user
 define('ADMIN_BASE', 'home');
 
+const DATE_FORMAT_LONG = "d M Y g:i:sa";
+const DATE_FORMAT_SHORT = "d-M-y g:i:sa";
+
+const POST_TYPE_PAGE = 1;
+const POST_TYPE_POST = 2;
+const POST_TYPE_ARRAY = [POST_TYPE_PAGE => "Page", POST_TYPE_POST => "Post"];
+
 // set user roles
 const ROLE_USER         = 1;
 const ROLE_ADMIN        = 2;

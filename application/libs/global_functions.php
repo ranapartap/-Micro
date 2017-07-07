@@ -216,3 +216,19 @@ function slug_create( $str ) {
     $str = str_replace(' ', '-', $str);
     return preg_replace('/\-{2,}/', '-', $str);
 }
+
+function date_format_view($mysql_date, $format) {
+    return date($format, strtotime($mysql_date));
+}
+
+function get_content() {
+    $page = Micro\Core\Application::$service->page;
+//    dd(stripslashes($page->content),1);
+    return htmlspecialchars_decode($page->content);
+}
+//
+//function save_content($) {
+//    $page = Micro\Core\Application::$service->page;
+////    dd(stripslashes($page->content),1);
+//    return htmlspecialchars()($page->content);
+//}

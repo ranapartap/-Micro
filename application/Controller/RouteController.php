@@ -42,6 +42,9 @@ class RouteController {
             Application::$service = $ser;
             Application::$app = $app;
 
+//            Application::$pages = Application::$app->db->connection->posts->where('post_type=?', POST_TYPE_PAGE);
+//            dd(Application::$pages ,1);
+
         });
 
         // Frontend requests handling
@@ -69,6 +72,9 @@ class RouteController {
                 $this->login(new \Micro\Controller\AuthController());
             }
         });
+
+        // Dynamic Pages
+        $this->dynamicPages();
 
         // Process the Routes now
         $this->router->dispatch();
@@ -123,6 +129,28 @@ class RouteController {
                 $this->createRoute($action->method, $action->route, [new $menu->controller, $action->action]);
 
             }
+
+        }
+
+    }
+
+    public function dynamicPages() {
+
+        $model = new Model();
+        $pages = $model->connection->posts->where('post_type=? AND is_deleted=? AND status=?', [POST_TYPE_PAGE, AdminPostController::POST_DELETE_FALSE, AdminPostController::POST_STATUS_PUBLISHED]);
+        Application::$pages = fetch_row($pages);
+
+        // Setup layout for dynamic pages
+        $this->router->respond(function ($request, $response, $service) {
+            $service->layout(getPath('views') . 'pages/_layout.php');
+        });
+
+        // Set routes for dynamic pages
+        foreach (Application::$pages as $key => $page)
+        {
+            $this->router->get('/'.$page->slug, function() use ($page) {
+                Application::$service->render(getPath('views') . 'pages/page-content.php', ['page' => $page]);
+            });
 
         }
 
