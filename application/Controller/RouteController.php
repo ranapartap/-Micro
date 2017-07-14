@@ -1,8 +1,8 @@
 <?php
 /**
- * There are some variables attached to every function which is called from RouterController,
- * these variables are set by our Router, You can read more on https://github.com/klein/klein.php
- * We have pass these variables to our controller functions to act on Request, Response, Services and App
+ * Klein Router required to pass some variables ($req, $res, $ser, $app) to each calling function,
+ * to simplify the process we have attached these variable to Application Code class,
+ * New these variables can be accessed in every controller by declaring application class
  *
  * @param type $req - Request Object - Like URI, Request Parameters etc.
  * @param type $res - Respond to all requests like get, put, handle uri requests etc.
@@ -42,6 +42,9 @@ class RouteController {
             Application::$service = $ser;
             Application::$app = $app;
 
+            if(Application::$request->method() !== METHOD_GET)
+                 \Micro\Core\Old::set();
+
 //            Application::$pages = Application::$app->db->connection->posts->where('post_type=?', POST_TYPE_PAGE);
 //            dd(Application::$pages ,1);
 
@@ -70,6 +73,7 @@ class RouteController {
 
                 // Not logged in? Show login screen
                 $this->login(new \Micro\Controller\AuthController());
+
             }
         });
 
@@ -79,7 +83,6 @@ class RouteController {
         // Process the Routes now
         $this->router->dispatch();
     }
-
 
     /**
      * Login Module
@@ -91,14 +94,19 @@ class RouteController {
             $service->layout(getPath('views') . 'auth/_layout.php');
         });
 
-        // When base admin url is accessed like "www.example.com/admin"
+        // Show Login/SignUp Screen when base admin url is accessed like "www.example.com/admin"
         $this->router->get('/?', function($request, $response, $service, $app) use ($Controller) {
             return $Controller->login($request, $response, $service, $app);
         });
 
-        // When POST request is submitted on base admin url like Login Page Submitted
+        // Login Page Submitted, when Login POST request is submitted on base admin url
         $this->router->post('/?', function($request, $response, $service, $app) use ($Controller) {
             return $Controller->do_login($request, $response, $service, $app);
+        });
+
+        // Signup Page Submitted, when Signup POST request is submitted on base admin url
+        $this->router->put('/?', function($request, $response, $service, $app) use ($Controller) {
+            return $Controller->signup($request, $response, $service, $app);
         });
     }
 
@@ -148,11 +156,32 @@ class RouteController {
         // Set routes for dynamic pages
         foreach (Application::$pages as $key => $page)
         {
-            $this->router->get('/'.$page->slug, function() use ($page) {
-                Application::$service->render(getPath('views') . 'pages/page-content.php', ['page' => $page]);
-            });
+            switch ($page->slug)
+            {
+                case '404':
+                    $this->router->respond($page->slug, function () use ($page) {
+                        if (AuthController::validate( ROLE_ADMIN )){
+                            Application::$service->layout(getPath('views') . 'admin/_layout.php');
 
+                            if(file_exists(getPath('views') . 'admin/404.php'))
+                                Application::$service->render(getPath('views') . 'admin/404.php');
+                            else
+                                Application::$service->render(getPath('views') . 'pages/page-content.php', ['page' => $page]);
+
+                        } else {
+                            Application::$service->render(getPath('views') . 'pages/page-content.php', ['page' => $page]);
+                        }
+                    });
+                    break;
+
+                default:
+                    $this->router->get('/'.$page->slug, function() use ($page) {
+                        Application::$service->render(getPath('views') . 'pages/page-content.php', ['page' => $page]);
+                    });
+                    break;
+            }
         }
+
 
     }
 

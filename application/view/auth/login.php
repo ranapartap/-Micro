@@ -1,8 +1,16 @@
+<?php
+$old = new \Micro\Core\Old;
+
+$tab = \Micro\Core\SessionManager::flushSession('tab');
+$active_1 = (!$tab ? 'active' : '');
+$active_2 = ($tab == 2 ? 'active' : '');
+
+?>
 <div class="container">
     <div class="row">
         <div class="site-logo">
-                    <a href="<?= get_url('', FALSE) ?>" class="brand"><img src="/img/front/logo.png" height="60"></a>
-                </div>
+            <a href="<?= get_url('', FALSE) ?>" class="brand"><img src="/img/front/logo.png" height="60"></a>
+        </div>
         <div class="col-md-6 col-md-offset-3">
 
             <div class="card">
@@ -11,21 +19,18 @@
                     <div id="signup" class="col-md-12 full-width-tabs">
 
                         <ul  class="nav nav-pills">
-                            <li class="active">
-                                <a  href="#1b" data-toggle="tab">Login</a>
-                            </li>
-                            <li><a href="#2b" data-toggle="tab">Signup</a>
-                            </li>
+                            <li class="<?= $active_1 ?>" ><a  href="#1b" data-toggle="tab">Login</a></li>
+                            <li class="<?= $active_2 ?>"><a href="#2b" data-toggle="tab">Signup</a></li>
                         </ul>
 
                         <?= $this->partial(getPath('views') . 'admin/_flashes.php') ?>
 
                         <div class="tab-content clearfix">
-                            <div class="tab-pane active" id="1b">
+                            <div class="tab-pane <?= $active_1 ?>" id="1b">
                                 <div class="content">
                                     <form id="login-form"  method="post" role="form">
                                         <div class="form-group">
-                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Email/Username" value="">
+                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Email/Username" value="<?= $old->value('username') ?>">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
@@ -54,14 +59,17 @@
                                 </div>
                             </div> <!-- /tab-pane -->
 
-                            <div class="tab-pane" id="2b">
+                            <div class="tab-pane <?= $active_2 ?>" id="2b">
                                 <div class="content">
                                     <form id="register-form" method="post" role="form" >
                                         <div class="form-group">
-                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
+                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="<?= $old->value('username') ?>">
                                         </div>
                                         <div class="form-group">
-                                            <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="">
+                                            <input type="text" name="fullname" id="fullname" tabindex="1" class="form-control" placeholder="Fullname" value="<?= $old->value('fullname') ?>">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="<?= $old->value('email') ?>">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
@@ -72,6 +80,7 @@
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-sm-6 col-sm-offset-3">
+                                                    <input type="hidden" name="_method" value="<?= METHOD_PUT ?>" />
                                                     <input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-success btn-fill" value="Register Now">
                                                 </div>
                                             </div>

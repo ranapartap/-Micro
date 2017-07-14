@@ -129,6 +129,12 @@ $admin_menus =  [
                                                                     'action' => 'ajaxValidateusercreate'
                                                                 ],
 
+                                                                // View post "www.example.com/admin/post/view/[id]" (post id)
+                                                                [   'method' => METHOD_GET,
+                                                                    "route" => '/post/view/[i:id]',
+                                                                    'action' => 'preview'
+                                                                ],
+
                                                             ],
                                 ],
 ];

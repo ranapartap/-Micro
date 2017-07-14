@@ -11,6 +11,8 @@ use Valitron\Validator;
 
 class AdminUserController extends BaseController {
 
+    const BASE_URL = 'users';
+    
     const USER_STATUS_ACTIVE = 0;
     const USER_STATUS_BLOCKED = 1;
     const USER_STATUS_ARRAY = [0 => "Active", 1 => "Blocked"] ;
@@ -20,6 +22,7 @@ class AdminUserController extends BaseController {
 
     const USERNAME_MIN_LEN = 4;
     const USERNAME_MAX_LEN = 100;
+
 
     public  $rules = [
                     'username' => ['required', 'alphaNum',  ['lengthMin', self::USERNAME_MIN_LEN], ['lengthMax', self::USERNAME_MAX_LEN] ],
@@ -33,7 +36,7 @@ class AdminUserController extends BaseController {
     public function index()
     {
         // load view with PageTitle and Users collection
-        Application::$service->render(getPath('views') . 'admin/users/index.php',
+        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/index.php',
                         [   'pageTitle' => "Users",
                             'users' => Application::$app->db->connection->users->where('is_deleted=?', AdminUserController::USER_DELETE_FALSE)
                         ]
@@ -97,10 +100,10 @@ class AdminUserController extends BaseController {
             }
         }
 
-        Application::$response->redirect(admin_url('users'));
+        Application::$response->redirect(admin_url(self::BASE_URL));
 
         // load view
-        Application::$service->render(getPath('views') . 'admin/users/form.php',
+        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/form.php',
                         [   'pageTitle' => "Create User",
                             'method' => METHOD_POST,
                         ]
@@ -125,13 +128,13 @@ class AdminUserController extends BaseController {
         }
 
         if($error) {
-            Application::$response->redirect(admin_url('users'));
+            Application::$response->redirect(admin_url(self::BASE_URL));
             return;
         }
 
 
         // load view
-        Application::$service->render(getPath('views') . 'admin/users/edit.php',
+        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/edit.php',
                         [   'pageTitle' => "Edit Users",
                             'data' => $user,
                             'method' => METHOD_PUT,
@@ -174,7 +177,7 @@ class AdminUserController extends BaseController {
         else
             Application::$service->flash('<strong>Error!</strong> User not updated.', 'danger');
 
-        Application::$response->redirect(admin_url('users'));
+        Application::$response->redirect(admin_url(self::BASE_URL));
 
         return;
     }
@@ -212,7 +215,7 @@ class AdminUserController extends BaseController {
         else
             Application::$service->flash('<strong>Error!</strong> updating user status.', 'danger');
 
-        Application::$response->redirect(admin_url('users'));
+        Application::$response->redirect(admin_url(self::BASE_URL));
 
         return;
     }

@@ -10,6 +10,8 @@
         <link href="<?= get_url('css') ?>dataTables.min.css" rel="stylesheet">
         <link href="<?= get_url('css') ?>datatables-net.min.css" rel="stylesheet">
         <link href="<?= get_url('css') ?>sweetalert.css" rel="stylesheet">
+        <link href="<?= get_url('css') ?>summernote.css" rel="stylesheet">
+        <link href="<?= get_url('css') ?>editor.css" rel="stylesheet">
         <link href="<?= get_url('css') ?>admin.css" rel="stylesheet">
 
         <!--     Fonts and icons     -->
@@ -59,6 +61,7 @@
     <script src="<?= get_url('js') ?>light-bootstrap-dashboard.js"></script>
     <script src="<?= get_url('js') ?>sweetalert.min.js"></script>
     <script src="<?= get_url('js') ?>validator.min.js"></script>
+    <script src="<?= get_url('js') ?>summernote.min.js"></script>
     <!--<script src="<?= get_url('js') ?>demo.js"></script>-->
 
     <script type="text/javascript">

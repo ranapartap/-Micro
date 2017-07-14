@@ -23,11 +23,20 @@ select.input-sm {
 
 .dataTable .edit-buttons{
     display:none;
+    margin-top: 7px;
     }
 .dataTable .edit-buttons a{
     color:#58a9ca;
-       font-family:"Helvetica Neue",Arial,sans-serif;
-}    
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    margin: 0 5px;
+    display: table;
+}
+.dataTable .edit-buttons a:first-child{
+    margin-left:0;
+}
+.dataTable .edit-buttons-wrapper{
+    display: flex;
+}
 .dataTable{
     font-family:"Helvetica Neue",sans-serif;
     font-size:12px;

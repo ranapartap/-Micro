@@ -11,9 +11,11 @@ use Valitron\Validator;
 
 class AdminPostController extends BaseController {
 
+    const BASE_URL = 'posts';
+
     const POST_STATUS_DISABLED = 0;
     const POST_STATUS_PUBLISHED = 1;
-    const POST_STATUS_ARRAY = [0 => "Disabled", 1 => "Published"] ;
+    const POST_STATUS_ARRAY = [0 => "Private", 1 => "Publish"] ;
 
     const POST_DELETE_FALSE = 0;
     const POST_DELETE_TRUE = 1;
@@ -29,16 +31,34 @@ class AdminPostController extends BaseController {
     public function index()
     {
         // load view with PageTitle and Users collection
-        Application::$service->render(getPath('views') . 'admin/posts/index.php',
+        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/index.php',
                         [   'pageTitle' => "Posts",
                             'posts' => Application::$app->db->connection->posts->where('is_deleted=?', AdminPostController::POST_DELETE_FALSE)
                         ]
                     );
     }
 
+    /**
+     * Preview post/page
+     */
+    public function preview()
+    {
+        if(!$post = Application::$app->db->connection->posts("id = ?", Application::$request->id)->fetch()){
+            Application::$service->flash('<strong>Error!</strong> Post/Page not found.', 'danger');
+            $error = true;
+        }
+
+        $post = fetch_row($post);
+
+        // Set frontend page layout
+        Application::$service->layout(getPath('views') . 'pages/_layout.php');
+
+        return Application::$service->render(getPath('views') . 'pages/page-content.php', ['page' => $post]);
+    }
+
 
     /**
-     * Edit post page
+     * Edit post/page
      */
     public function create()
     {
@@ -63,7 +83,7 @@ class AdminPostController extends BaseController {
                 );
 
                 if($result =  Application::$app->db->connection->users()->insert($data)){
-                    Application::$service->flash('<strong>Success!</strong> User added successfully.', 'success');
+                    Application::$service->flash('<strong>Success!</strong> Post added successfully.', 'success');
                 }
 
             } else {
@@ -76,8 +96,8 @@ class AdminPostController extends BaseController {
         Application::$response->redirect(admin_url('users'));
 
         // load view
-        Application::$service->render(getPath('views') . 'admin/users/form.php',
-                        [   'pageTitle' => "Create User",
+        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/form.php',
+                        [   'pageTitle' => "Create Post",
                             'method' => METHOD_POST,
                         ]
                     );
@@ -91,24 +111,24 @@ class AdminPostController extends BaseController {
 
         $error = false;
         if (!Application::$service->validateParam('id')->isInt()){
-            Application::$service->flash('<strong>Error!</strong> Invalid user ID supplied.', 'danger');
+            Application::$service->flash('<strong>Error!</strong> Invalid Post ID supplied.', 'danger');
             $error = true;
         }
 
-        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
-            Application::$service->flash('<strong>Error!</strong> User not found.', 'danger');
+        if(!$user = Application::$app->db->connection->posts("id = ?", Application::$request->id)->fetch()){
+            Application::$service->flash('<strong>Error!</strong> Post not found.', 'danger');
             $error = true;
         }
 
         if($error) {
-            Application::$response->redirect(admin_url('users'));
+            Application::$response->redirect(admin_url(self::BASE_URL));
             return;
         }
 
 
         // load view
-        Application::$service->render(getPath('views') . 'admin/users/edit.php',
-                        [   'pageTitle' => "Edit Users",
+        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/edit.php',
+                        [   'pageTitle' => "Edit Post",
                             'data' => $user,
                             'method' => METHOD_PUT,
                         ]
@@ -116,7 +136,7 @@ class AdminPostController extends BaseController {
     }
 
     /**
-     * Update user details - Request submitted from User Edit page
+     * Update user details - Request submitted from Post Edit page
      */
     public function update()
     {
@@ -127,8 +147,8 @@ class AdminPostController extends BaseController {
             $error = true;
         }
 
-        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
-            Application::$service->flash('<strong>Error!</strong> User not found.', 'danger');
+        if(!$user = Application::$app->db->connection->posts("id = ?", Application::$request->param('id'))->fetch()){
+            Application::$service->flash('<strong>Error!</strong> Post not found.', 'danger');
             $error = true;
         }
 
@@ -138,19 +158,17 @@ class AdminPostController extends BaseController {
         }
 
         $data = [
-                    'fullname' => Application::$request->param('fullname'),
-                    'email' => Application::$request->param('email'),
-                    'mobile' => Application::$request->param('mobile'),
-                    'address' => Application::$request->param('address'),
-                    'about' => Application::$request->param('about'),
+                    'title' => Application::$request->param('title'),
+                    'slug' => Application::$request->param('slug'),
+                    'content' => esc_html(Application::$request->param('content')),
                 ];
 
         if($user->update($data))
-            Application::$service->flash('<strong>Success!</strong> User updated successfully.', 'success');
+            Application::$service->flash('<strong>Success!</strong> Post updated successfully.', 'success');
         else
-            Application::$service->flash('<strong>Error!</strong> User not updated.', 'danger');
+            Application::$service->flash('<strong>Error!</strong> Post not updated.', 'danger');
 
-        Application::$response->redirect(admin_url('users'));
+        Application::$response->redirect(admin_url(self::BASE_URL));
 
         return;
     }
@@ -171,8 +189,8 @@ class AdminPostController extends BaseController {
             $error = true;
         }
 
-        if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
-            Application::$service->flash('<strong>Error!</strong> User not found.', 'danger');
+        if(!$user = Application::$app->db->connection->posts("id = ?", Application::$request->param('id'))->fetch()){
+            Application::$service->flash('<strong>Error!</strong> Post not found.', 'danger');
             $error = true;
         }
 
@@ -181,38 +199,38 @@ class AdminPostController extends BaseController {
             return;
         }
 
-        $mode = Application::$request->param('mode') == AdminUserController::USER_STATUS_BLOCKED ? 'Blocked' : "Activated";
+        $mode = Application::$request->mode == AdminPostController::POST_STATUS_DISABLED ? AdminPostController::POST_STATUS_ARRAY[AdminPostController::POST_STATUS_DISABLED] : AdminPostController::POST_STATUS_ARRAY[AdminPostController::POST_STATUS_PUBLISHED];
 
         if($user->update(['status'=>  Application::$request->param('mode')]))
-            Application::$service->flash("<strong>Success!</strong> User <b>{$mode}</b>  successfully.", 'success');
+            Application::$service->flash("<strong>Success!</strong> Post <b>{$mode}</b>  successfully.", 'success');
         else
-            Application::$service->flash('<strong>Error!</strong> updating user status.', 'danger');
+            Application::$service->flash('<strong>Error!</strong> updating post status.', 'danger');
 
-        Application::$response->redirect(admin_url('users'));
+        Application::$response->redirect(admin_url(self::BASE_URL));
 
         return;
     }
 
     /**
-     * Delete a user - ajax call Update user status as deleted
+     * Delete a post - ajax call Update post status as deleted
      */
     public function ajaxDelete()
     {
         $error = false;
         if (!Application::$service->validateParam('id')->isInt()){
-            Application::$response->json(['error' => 'Invalid user ID supplied.']);
+            Application::$response->json(['error' => 'Invalid post ID supplied.']);
             return;
         }
 
         if(!$user = Application::$app->db->connection->users("id = ?", Application::$request->param('id'))->fetch()){
-            Application::$response->json(['error' => 'User not found.']);
+            Application::$response->json(['error' => 'Post not found.']);
             return;
         }
 
-        if($err = $user->update(['is_deleted'=> AdminUserController::USER_DELETE_TRUE]))
+        if($err = $user->update(['is_deleted'=> AdminPostController::USER_DELETE_TRUE]))
             Application::$response->json(['success' => 1, 'status' => $err]);
         else
-            Application::$response->json(['error' => 'User not deleted', 'status' => $err]);
+            Application::$response->json(['error' => 'Post not deleted', 'status' => $err]);
 
         return;
     }

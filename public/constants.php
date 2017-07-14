@@ -32,6 +32,12 @@ define('URL_ADD_POST_SLASH', FALSE);
 // base URL for admin user
 define('ADMIN_BASE', 'home');
 
+//New registered user role type
+const NEW_REG_USER_ROLE_ID = 1;
+
+//Use password encryption
+const PASSWORD_ENCRYPTION = FALSE;
+
 const DATE_FORMAT_LONG = "d M Y g:i:sa";
 const DATE_FORMAT_SHORT = "d-M-y g:i:sa";
 

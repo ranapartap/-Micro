@@ -16,9 +16,17 @@ namespace Micro\Controller;
 use Micro\Controller\BaseController;
 use Micro\Core\SessionManager;
 use Micro\Core\Application;
+use Valitron\Validator;
 use Klein\Exceptions\KleinExceptionInterface;
 
 class AuthController extends BaseController {
+
+     public  $rules = [
+                    'username' => ['required', 'alphaNum', ['lengthMin', 2], ['lengthMax', 255]],
+                    'password' => ['required', 'alphaNum', ['lengthMin', 2], ['lengthMax', 255]],
+                    'confirm-password' => [['equals', 'password']],
+                    'email' => ['required', 'email'],
+                    ];
 
     public function login() {
 
@@ -31,22 +39,72 @@ class AuthController extends BaseController {
         if (empty(Application::$request->password))
             $err .= (empty($err) ? '' : '<br>') . '<strong>Error!</strong> Empty Password.';
 
-        if (!$user = Application::$app->db->connection->users("(email = :un OR username = :un) AND password=:pw", ["un"=>Application::$request->username, "pw"=>Application::$request->password])->fetch())
+        if(!$user = Application::$app->db->connection->users("(email = :un OR username = :un)", [ "un"=> Application::$request->username])->fetch())
+            $err .= (empty($err) ? '' : '<br>') . '<strong>Error!</strong> Invalid User.';
+
+        if(empty($err) && PASSWORD_ENCRYPTION) {
+            if(!password_verify(Application::$request->password, $user->password))
+                $err .= (empty($err) ? '' : '<br>') . '<strong>Error!</strong> Invalid Username/Password.';
+        }
+
+        if(empty($err) && !PASSWORD_ENCRYPTION) {
+            if (!$user = Application::$app->db->connection->users(
+                    "(email = :un OR username = :un) AND password=:pw",
+                        [   "un"=> Application::$request->username,
+                            "pw"=> Application::$request->password
+                        ])->fetch()
+                )
             $err .= (empty($err) ? '' : '<br>') . '<strong>Error!</strong> Invalid Username/password.';
+        }
 
         if (!empty($err)) {
             Application::$service->flash($err, 'danger');
             Application::$service->refresh();
             return;
         }
-
         $user = fetch_row($user);
         $session = new SessionManager;
-        $session->setSessionKey('user', $user);
+        $session->setSession('user', $user);
+//dd( $session->getSession('user'),1);
 
 //        dd($session->getSession()->user,1);
 
         return Application::$response->redirect(admin_url('', false));
+    }
+
+    /**
+     * New user registration
+     * @return type
+     */
+    public function signup() {
+        $err = '';
+
+        $valid = new Validator($_POST);
+        $valid->mapFieldsRules($this->rules);
+
+        if($valid->validate()){
+            $password = PASSWORD_ENCRYPTION ? password_hash($strPassword, PASSWORD_DEFAULT) : Application::$request->password;
+
+            $data = [
+                        "username" => Application::$request->username,
+                        "roles_id" => NEW_REG_USER_ROLE_ID,
+                        "fullname" => Application::$request->fullname,
+                        "password" => $password,
+                        "email" => Application::$request->email,
+                    ];
+
+            if($result =  Application::$app->db->connection->users()->insert($data))
+                Application::$service->flash('<strong>Success!</strong> Registration completed successfully', 'success');
+            else
+                Application::$service->flash('<strong>Error!</strong> registering new user', 'danger');
+        } else {
+            Application::$service->flash(errors_to_string($valid->errors() ), 'danger');
+            return;
+        }
+
+        SessionManager::setSession('tab', 2);
+        Application::$service->refresh();
+
     }
 
     public function logout() {

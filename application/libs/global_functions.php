@@ -208,7 +208,7 @@ function errors_to_string($errors) {
  * @param type $str String to slugify
  * @return type
  */
-function slug_create( $str ) {
+function slug_create($str) {
     $search = array('Ș', 'Ț', 'ş', 'ţ', 'Ş', 'Ţ', 'ș', 'ț', 'î', 'â', 'ă', 'Î', 'Â', 'Ă', 'ë', 'Ë');
     $replace = array('s', 't', 's', 't', 's', 't', 's', 't', 'i', 'a', 'a', 'i', 'a', 'a', 'e', 'E');
     $str = str_ireplace($search, $replace, strtolower(trim($str)));
@@ -226,9 +226,43 @@ function get_content() {
 //    dd(stripslashes($page->content),1);
     return htmlspecialchars_decode($page->content);
 }
+
 //
 //function save_content($) {
 //    $page = Micro\Core\Application::$service->page;
 ////    dd(stripslashes($page->content),1);
 //    return htmlspecialchars()($page->content);
 //}
+
+/**
+ * Returns the db safe html string
+ * @param type $html Html to sanatize
+ * @param type $char_set
+ * @return string escaped string
+ */
+function esc_html($html, $char_set = 'UTF-8') {
+    if (empty($html)) {
+        return '';
+    }
+
+    $html = (string) $html;
+    $html = htmlspecialchars($html, ENT_QUOTES, $char_set);
+
+    return $html;
+}
+
+/**
+ * Returns the db safe html string
+ * @param type $html Html to sanatize
+ * @param type $char_set
+ * @return string escaped string
+ */
+function esc_html_decode($string) {
+    if (empty($string)) {
+        return '';
+    }
+
+    $html = htmlspecialchars_decode ($string);
+
+    return $html;
+}

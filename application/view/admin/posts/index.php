@@ -2,9 +2,8 @@
     <div class="col-md-12">
         <div class="card">
             <div class="header">
-                <h4 class="title">Manage Posts <a href="<?=admin_url('post')?>" class="btn btn-xs btn-success btn-fill ">Add New Post</a></h4>
-
-                <!--<p class="category"></p>-->
+                <h4 class="title">Manage Posts <a href="<?= admin_url('post') ?>" class="btn btn-xs btn-success btn-fill ">Add New Post</a></h4>
+                <!--<p class="category">Any subtitle here</p>-->
             </div>
 
             <div class="dataTableWrapper content table-responsive">
@@ -28,27 +27,41 @@
                     <tbody>
 
                         <?php foreach ($this->posts as $key => $post) : ?>
+
                             <tr  id="dt-row-<?= $post['id'] ?>" class="dt-row">
+
                                 <td><?= $post['id'] ?></td>
+
                                 <td><?= POST_TYPE_ARRAY[$post['post_type']] ?></td>
+
                                 <td><?= $post['title'] ?>
+
                                     <div class="edit-buttons">
-                                        <a href="<?= admin_url('post/') . $post['id']; ?>">Edit</a>
-                                                    <!--class="btn btn-xs btn-danger btn-fill "-->
-                                    <?php if ($post['status'] == \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED) { ?>
-                                        | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::POST_STATUS_DISABLED ?>" >Un-publish</a>
+                                        <div class="edit-buttons-wrapper">
 
-                                    <?php } else { ?>
-                                        | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::USER_STATUS_ACTIVE ?>" >Publish</a>
+                                            <a href="<?= admin_url('post/') . $post['id']; ?>">Edit</a>
+                                            <!--class="btn btn-xs btn-danger btn-fill "-->
+                                            <?php if ($post['status'] == \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED) { ?>
+                                                | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::POST_STATUS_DISABLED ?>" >Mark <?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[\Micro\Controller\AdminPostController::POST_STATUS_DISABLED] ?></a>
 
-                                    <?php } ?>
-                                        | <a href="javascript:;" class="delete-post" id="<?= $post['id'] ?>">Delete</a>
+                                            <?php } else { ?>
+                                                | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED ?>" ><?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[\Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED] ?> Post</a>
+
+                                            <?php } ?>
+                                            | <a href="javascript:;" class="delete-post" id="<?= $post['id'] ?>">Delete</a>
+
+                                            | <a  target="_blank" href="<?= admin_url('post/view/') . $post['id']; ?>">View</a>
+
+                                        </div>
                                     </div>
+
                                 </td>
+
                                 <td><?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[$post['status']] ?></td>
-                                <td><?= date_format_view($post['created_on'], DATE_FORMAT_SHORT)  ?></td>
+                                <td><?= date_format_view($post['created_on'], DATE_FORMAT_SHORT) ?></td>
                                 <td><?= date_format_view($post['updated_on'], DATE_FORMAT_LONG) ?></td>
                             </tr>
+
                         <?php endforeach; ?>
 
                     </tbody>
@@ -65,7 +78,7 @@
         var datatable = $('#dt-posts').DataTable({
             responsive: true,
             pageLength: 25,
-            columnDefs: [{ targets: 'no-sort', orderable: false }],
+            columnDefs: [{targets: 'no-sort', orderable: false}],
             initComplete: function () {
                 this.api().columns().every(function () {
                     var column = this;
@@ -78,25 +91,25 @@
                             .on('change', function () {
 //                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
 //                                column.search(val ? '^' + val + '$' : '', true, false).draw();
-                                var val = $("<div>"+$(this).val()+"</div>").find("div.edit-buttons").remove().end().text().trim();
+                                var val = $("<div>" + $(this).val() + "</div>").find("div.edit-buttons").remove().end().text().trim();
                                 column.search(val).draw();
                             });
                     column.data().unique().sort().each(function (d, j) {
-                        var dd = $("<div>"+d+"</div>").find("div.edit-buttons").remove().end().text().trim();
+                        var dd = $("<div>" + d + "</div>").find("div.edit-buttons").remove().end().text().trim();
                         select.append('<option value="' + dd + '">' + dd + '</option>')
                     });
                 });
             }
         });
 
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             jQuery('#dt-posts').
-              on('mouseover', 'tr', function() {
-                  jQuery(this).find('.edit-buttons').show();
-              }).
-              on('mouseout', 'tr', function() {
-                  jQuery(this).find('.edit-buttons').hide();
-              });
+                    on('mouseover', 'tr', function () {
+                        jQuery(this).find('.edit-buttons').show();
+                    }).
+                    on('mouseout', 'tr', function () {
+                        jQuery(this).find('.edit-buttons').hide();
+                    });
         });
 
         $('.delete-post').click(function () {
