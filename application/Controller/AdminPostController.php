@@ -30,8 +30,8 @@ class AdminPostController extends BaseController {
      */
     public function index()
     {
-        // load view with PageTitle and Users collection
-        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/index.php',
+
+        return  Application::render(getPath('views') . 'admin/'.self::BASE_URL.'/index.php',
                         [   'pageTitle' => "Posts",
                             'posts' => Application::$app->db->connection->posts->where('is_deleted=?', AdminPostController::POST_DELETE_FALSE)
                         ]

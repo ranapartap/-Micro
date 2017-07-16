@@ -30,10 +30,10 @@ $active_2 = ($tab == 2 ? 'active' : '');
                                 <div class="content">
                                     <form id="login-form"  method="post" role="form">
                                         <div class="form-group">
-                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Email/Username" value="<?= $old->value('username') ?>">
+                                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Email/Username" value="<?= $old->value('username','admin') ?>">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+                                            <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password" value="admin">
                                         </div>
                                         <div class="form-group text-center">
                                             <input type="checkbox" tabindex="3" class="" name="remember" id="remember">

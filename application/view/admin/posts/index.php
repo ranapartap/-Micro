@@ -7,72 +7,64 @@
             </div>
 
             <div class="dataTableWrapper content table-responsive">
-                <table id="dt-posts" class="table table-hover table-striped display dataTable dtr-inline">
-                    <thead>
-                        <th>ID</th>
-                        <th>Type</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Created On</th>
-                        <th>Updated On</th>
-                    </thead>
+                <?php
 
-                    <tfoot>
-                        <th>ID</th>
-                        <th>Type</th>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Created On</th>
-                        <th>Updated On</th>
-                    <tbody>
+                Micro\Core\GridView::show(
+                    $this->posts,
+                    ['id' => "dt-posts", 'class' => 'table table-hover table-striped display dataTable dtr-inline'],
+                    [
+                        ['label' => 'Id', 'value' => 'id'],
+                        ['label' => 'Type', 'value' => function($m) {
+                                return POST_TYPE_ARRAY[$m->post_type];
+                            }
+                        ],
+                        ['label' => 'Title', 'value' =>function($m) {
+                            ob_start(); ?>
 
-                        <?php foreach ($this->posts as $key => $post) : ?>
+                            <?= $m->title ?>
+                             <div class="edit-buttons">
+                                <div class="edit-buttons-wrapper">
 
-                            <tr  id="dt-row-<?= $post['id'] ?>" class="dt-row">
+                                    <a href="<?= admin_url('post/') . $m->id; ?>">Edit</a>
+                                    <?php if ($m->status == \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED) { ?>
+                                        | <a href="<?= admin_url('post/block/') . $m->id . '/' . \Micro\Controller\AdminPostController::POST_STATUS_DISABLED ?>" >Mark <?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[\Micro\Controller\AdminPostController::POST_STATUS_DISABLED] ?></a>
 
-                                <td><?= $post['id'] ?></td>
+                                    <?php } else { ?>
+                                        | <a href="<?= admin_url('post/block/') . $m->id . '/' . \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED ?>" ><?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[\Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED] ?> Post</a>
 
-                                <td><?= POST_TYPE_ARRAY[$post['post_type']] ?></td>
+                                    <?php } ?>
+                                    | <a href="javascript:;" class="delete-post" id="<?= $m->id ?>">Delete</a>
 
-                                <td><?= $post['title'] ?>
+                                    | <a  target="_blank" href="<?= admin_url('post/view/') . $m->id; ?>">View</a>
 
-                                    <div class="edit-buttons">
-                                        <div class="edit-buttons-wrapper">
+                                </div>
+                            </div>
+                            <?php $str = ob_get_clean();
+                            return $str;
+                            }
+                        ],
+                        ['label' => 'Slug', 'value' => 'slug'],
+                        ['label' => 'Status', 'value' => function($m) {
+                                return \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[$m->status];
+                            }],
+                        ['label' => 'Created On', 'value' => function($m) {
+                                return date_format_view($m->updated_on, DATE_FORMAT_NO_SECONDS);
+                            }],
+                        ['label' => 'Updated On', 'value' => function($m) {
+                                return date_format_view($m->updated_on, DATE_FORMAT_NO_SECONDS);
+                            }],
+                    ]
+                );
 
-                                            <a href="<?= admin_url('post/') . $post['id']; ?>">Edit</a>
-                                            <!--class="btn btn-xs btn-danger btn-fill "-->
-                                            <?php if ($post['status'] == \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED) { ?>
-                                                | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::POST_STATUS_DISABLED ?>" >Mark <?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[\Micro\Controller\AdminPostController::POST_STATUS_DISABLED] ?></a>
-
-                                            <?php } else { ?>
-                                                | <a href="<?= admin_url('post/block/') . $post['id'] . '/' . \Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED ?>" ><?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[\Micro\Controller\AdminPostController::POST_STATUS_PUBLISHED] ?> Post</a>
-
-                                            <?php } ?>
-                                            | <a href="javascript:;" class="delete-post" id="<?= $post['id'] ?>">Delete</a>
-
-                                            | <a  target="_blank" href="<?= admin_url('post/view/') . $post['id']; ?>">View</a>
-
-                                        </div>
-                                    </div>
-
-                                </td>
-
-                                <td><?= \Micro\Controller\AdminPostController::POST_STATUS_ARRAY[$post['status']] ?></td>
-                                <td><?= date_format_view($post['created_on'], DATE_FORMAT_SHORT) ?></td>
-                                <td><?= date_format_view($post['updated_on'], DATE_FORMAT_LONG) ?></td>
-                            </tr>
-
-                        <?php endforeach; ?>
-
-                    </tbody>
-                </table>
-
+                ?>
             </div>
 
 
         </div>
     </div>
 </div>
+
+<?php ob_start(); ?>
 <script>
     $(document).ready(function () {
         var datatable = $('#dt-posts').DataTable({
@@ -152,3 +144,8 @@
 
     });
 </script>
+<?php
+$script = ob_get_clean();
+
+JSRegister('myscript', $script);
+?>

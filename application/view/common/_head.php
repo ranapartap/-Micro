@@ -24,3 +24,4 @@ if( !\Micro\Controller\AuthController::validate(ROLE_ADMIN) ){
     var ajaxurl = "<?= URL ?>";
     var currenturl = "<?=  \Micro\Core\Application::$request->uri() ?>";
 </script>
+

@@ -154,6 +154,8 @@ function base_url($root_only = false, $atCore = false) {
     } else
         $base_url = 'http://localhost/';
 
+     $base_url = URL_PUBLIC_FOLDER ? str_replace('/'.URL_PUBLIC_FOLDER, '', $base_url) : $base_url;
+
     return $base_url;
 }
 
@@ -266,3 +268,64 @@ function esc_html_decode($string) {
 
     return $html;
 }
+
+/**
+ * Register Javascript
+ *
+ * @param string $id Script Identification
+ * @param string $script Script url/code block
+ * @param bool $include_in_footer (default true)
+ *                              True = Include script in footer,
+ *                              False = Include script in head,
+ * @param int $priority (default 10) script priority 0-99
+ */
+function JSRegister($id, $script, $include_in_footer = true, $priority = 10) {
+
+    Micro\Core\Application::$enqueue_scripts[$id] = [
+            'priority' => $priority,
+            'include_in_footer' => $include_in_footer,
+            'script' => $script
+        ];
+}
+
+/**
+ * Un-register Javascript
+ */
+function JSUnregister($id) {
+    unset(Micro\Core\Application::$enqueue_scripts[$id]);
+}
+
+/**
+ * Load Javascript
+ *
+ * @param boolean $location_footer Load footer scripts (default: true)
+ */
+function JSLoad($location_footer = true) {
+    $scripts = '';
+
+    $scripts_array = Micro\Core\Application::$enqueue_scripts;
+    usort($scripts_array, function($a, $b) {return $a['priority'] - $b['priority'];} );
+
+    foreach ($scripts_array as $id => $arScript)
+    {
+        //Header Scripts
+        if(!$location_footer && !$arScript['include_in_footer'])
+            $scripts .= _createscript($arScript);
+
+        //Footer Scripts
+        if($location_footer && $arScript['include_in_footer'])
+            $scripts .= _createscript($arScript);
+
+
+    }
+
+    return $scripts;
+}
+
+ function _createscript($arScript) {
+        if (filter_var($arScript['script'], FILTER_VALIDATE_URL) == TRUE)
+            return  "<script type=\"text/javascript\" src=\"{$arScript['script']}\" ></script>";
+        else
+            return  "{$arScript['script']}";
+
+    }

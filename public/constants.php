@@ -35,11 +35,13 @@ define('ADMIN_BASE', 'home');
 //New registered user role type
 const NEW_REG_USER_ROLE_ID = 1;
 
-//Use password encryption
+//Use password encryption (Old saved user passwords become invalid)
 const PASSWORD_ENCRYPTION = FALSE;
 
 const DATE_FORMAT_LONG = "d M Y g:i:sa";
 const DATE_FORMAT_SHORT = "d-M-y g:i:sa";
+const DATE_FORMAT_NO_SECONDS = "d-M-Y g:ia";
+const DATE_FORMAT_DATE = "d-M-Y";
 
 const POST_TYPE_PAGE = 1;
 const POST_TYPE_POST = 2;

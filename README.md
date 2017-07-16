@@ -43,6 +43,10 @@ Micro is easy and micro.
 - MySQL
 - mod_rewrite activated
 
+## Demo
+[php-micro.tk](http://php-micro.tk)
+Admin un/pw : (admin/admin)
+
 ## Installation
 
  - Install via composer:

@@ -8,71 +8,55 @@
             </div>
 
             <div class="dataTableWrapper content table-responsive">
-                <table id="dt-users" class="table table-hover table-striped display dataTable dtr-inline">
-                    <thead>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Fullname</th>
-                    <th>Mobile</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    </thead>
 
-                    <tfoot>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Fullname</th>
-                    <th>Mobile</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    </tfoot>
+                <?php
 
-                    <tbody>
+                Micro\Core\GridView::show(
+                    $this->users,
+                    ['id' => "dt-users", 'class' => 'table table-hover table-striped display dataTable dtr-inline'],
+                    [
+                        ['label' => 'Id',           'value' => 'id'],
+                        ['label' => 'Username',     'value' => 'username'],
+                        ['label' => 'Fullname',     'value' =>function($m) {
+                            ob_start(); ?>
 
-                        <?php foreach ($this->users as $key => $user) : ?>
+                            <?= $m->username ?>
+                             <div class="edit-buttons">
+                                <div class="edit-buttons-wrapper">
 
-                            <tr  id="dt-row-<?= $user['id'] ?>" class="dt-row <?= $user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ? 'text-danger' : '' ?> ">
+                                    <a href="<?= admin_url('user/') . $m->id; ?>">Edit</a>
+                                    <?php if ($m->status ==  \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
+                                         | <a title="Block user" href="<?= admin_url('user/block/') . $m->id . '/' . \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" >Block</a>
 
-                                <td><?= $user['id'] ?></td>
+                                    <?php } else { ?>
+                                        | <a title="Un-block user" href="<?= admin_url('user/block/') . $m->id . '/' . \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" >Un-Block</a>
 
-                                <td><?= $user['username'] ?>
+                                    <?php } ?>
+                                    | <a title="Delete user" href="javascript:;" class="delete-user" fullname="<?= $m->fullname ?>" id="<?= $m->id ?>">Delete</a>
 
-                                    <div class="edit-buttons">
-                                        <div class="edit-buttons-wrapper">
+                                </div>
+                            </div>
+                            <?php $str = ob_get_clean();
 
-                                            <a title="Edit user" href="<?= admin_url('user/') . $user['id']; ?>">Edit</a>
+                            return $str;
+                            }
+                        ],
+                        ['label' => 'Mobile', 'value' => 'mobile'],
+                        ['label' => 'Email', 'value' => 'email'],
+                        ['label' => 'Status', 'value' => function($m) {
+                                                                        return \Micro\Controller\AdminUserController::USER_STATUS_ARRAY[$m->status];
+                                                                    }],
+                    ]
+                );
 
-                                            <!--class="btn btn-xs btn-danger btn-fill "-->
-                                            <?php if ($user['status'] == \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE) { ?>
-                                                | <a title="Block user" href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_BLOCKED ?>" >Block</a>
-
-                                            <?php } else { ?>
-                                                | <a title="Un-block user" href="<?= admin_url('user/block/') . $user['id'] . '/' . \Micro\Controller\AdminUserController::USER_STATUS_ACTIVE ?>" >Un-Block</a>
-
-                                            <?php } ?>
-                                            | <a title="Delete user" href="javascript:;" class="delete-user" fullname="<?= $user['fullname'] ?>" id="<?= $user['id'] ?>">Delete</a>
-
-                                        </div>
-                                    </div>
-
-                                </td>
-
-                                <td><?= $user['fullname'] ?></td>
-                                <td><?= $user['mobile'] ?></td>
-                                <td><?= $user['email'] ?></td>
-                                <td><?= \Micro\Controller\AdminUserController::USER_STATUS_ARRAY[$user['status']] ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-
-                    </tbody>
-                </table>
+                ?>
 
             </div>
-
-
         </div>
     </div>
 </div>
+
+<?php ob_start(); ?>
 <script>
     $(document).ready(function () {
         var datatable = $('#dt-users').DataTable({
@@ -152,3 +136,8 @@
 
     });
 </script>
+<?php
+$script = ob_get_clean();
+
+JSRegister('myscript', $script);
+?>

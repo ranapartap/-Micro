@@ -12,7 +12,7 @@ use Valitron\Validator;
 class AdminUserController extends BaseController {
 
     const BASE_URL = 'users';
-    
+
     const USER_STATUS_ACTIVE = 0;
     const USER_STATUS_BLOCKED = 1;
     const USER_STATUS_ARRAY = [0 => "Active", 1 => "Blocked"] ;
@@ -36,25 +36,12 @@ class AdminUserController extends BaseController {
     public function index()
     {
         // load view with PageTitle and Users collection
-        Application::$service->render(getPath('views') . 'admin/'.self::BASE_URL.'/index.php',
+        Application::render(getPath('views') . 'admin/'.self::BASE_URL.'/index.php',
                         [   'pageTitle' => "Users",
                             'users' => Application::$app->db->connection->users->where('is_deleted=?', AdminUserController::USER_DELETE_FALSE)
                         ]
                     );
     }
-
-    public function validate() {
-
-
-
-        $v->mapFieldsRules($rules);
-
-        if(!$v->validate())
-            return $v;
-
-        return true;
-    }
-
 
     /**
      * Edit user page

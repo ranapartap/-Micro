@@ -1,19 +1,23 @@
 <?php
-/** For more info about namespaces plase @see http://php.net/manual/en/language.namespaces.importing.php */
+
 namespace Micro\Core;
 
 use Micro\Controller\RouteController;
 
 class Application
 {
-    static $request;
-    static $response;
-    static $service;
-    static $app;
+    /** Klein Variables **/
+    static $request;    //Klein $request variable
+    static $response;   //Klein $respond variable
+    static $service;    //Klein $service variable
+    static $app;        //Klein $app variable
 
-    static $router;
+    static $router;     //Klein Router Object
 
-    static $pages;
+    static $pages;      //Holds Dynamic Pages List
+
+    static $enqueue_scripts;        //Holds enequed scripts List
+    static $enqueue_styles;         //Holds enequed styles List
 
 
     /**
@@ -24,6 +28,23 @@ class Application
     {
 //        $this->Router = new RouteController();
         self::$router = new RouteController();
+    }
+
+    public static function render($path, $vars) {
+
+        ob_start();
+        Application::$service->render($path, $vars);
+        $html = ob_get_clean();
+
+        $scripts_head = "<!--Head Scripts -->".PHP_EOL. JSLoad(false);
+        $scripts_foot = "<!--Footer Scripts -->".PHP_EOL. JSLoad(true);
+
+//        var_dump($scripts_head);
+        $html = str_replace('</head>',$scripts_head . PHP_EOL . '</head>' , $html );
+//        var_dump($scripts_foot);
+        $html = str_replace('</body>',$scripts_foot . PHP_EOL . '</body>' , $html );
+
+        echo $html;
     }
 
 }
